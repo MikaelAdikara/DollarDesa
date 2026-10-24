@@ -1,20 +1,20 @@
 import type { Metadata } from "next";
 import { Tour } from "@/components/tour";
-import { Eyebrow, fmtInt } from "@/components/ui";
+import { fmtInt } from "@/components/ui";
 import { NATIONAL, PILOT_TOTAL_SPPG, PROVINCES, SOURCES, allocateSppg } from "@/lib/pilot/reference";
 import { kitchens } from "@/lib/pilot/sim";
 
 export const metadata: Metadata = { title: "Implementasi" };
 
 function Architecture() {
-  const box = (x: number, y: number, w: number, h: number, title: string, lines: string[], fill = "#ffffff", stroke = "#cfd5cc", titleColor = "#17201a") => (
+  const box = (x: number, y: number, w: number, h: number, title: string, lines: string[], fill = "var(--color-card)", stroke = "var(--color-line)", titleColor = "var(--color-ink)") => (
     <g>
       <rect x={x} y={y} width={w} height={h} rx={12} fill={fill} stroke={stroke} strokeWidth={1.5} />
-      <text x={x + 14} y={y + 24} fontSize="14" fontWeight={700} fill={titleColor} fontFamily="var(--font-bricolage)">
+      <text x={x + 14} y={y + 24} fontSize="14" fontWeight={700} fill={titleColor} fontFamily="var(--font-schibsted)">
         {title}
       </text>
       {lines.map((l, i) => (
-        <text key={i} x={x + 14} y={y + 44 + i * 17} fontSize="11.5" fill="#3c4a3e">
+        <text key={i} x={x + 14} y={y + 44 + i * 17} fontSize="11.5" fill="var(--color-ink-2)">
           {l}
         </text>
       ))}
@@ -22,9 +22,9 @@ function Architecture() {
   );
   const arrow = (x1: number, y1: number, x2: number, y2: number, label?: string) => (
     <g>
-      <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#3b5a2c" strokeWidth={2} markerEnd="url(#arr)" />
+      <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="var(--color-daun)" strokeWidth={2} markerEnd="url(#arr)" />
       {label ? (
-        <text x={(x1 + x2) / 2} y={(y1 + y2) / 2 - 6} textAnchor="middle" fontSize="10.5" fill="#3b5a2c" fontFamily="var(--font-jetbrains)">
+        <text x={(x1 + x2) / 2} y={(y1 + y2) / 2 - 6} textAnchor="middle" fontSize="10.5" fill="var(--color-daun)" fontFamily="var(--font-geist-mono)">
           {label}
         </text>
       ) : null}
@@ -34,20 +34,20 @@ function Architecture() {
     <svg viewBox="0 0 1100 470" className="h-auto w-full" role="img" aria-label="Diagram arsitektur DETAK">
       <defs>
         <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-          <path d="M0,0 L10,5 L0,10 z" fill="#3b5a2c" />
+          <path d="M0,0 L10,5 L0,10 z" fill="var(--color-daun)" />
         </marker>
       </defs>
-      <text x={20} y={22} fontSize="11" fill="#66715f" fontFamily="var(--font-jetbrains)" letterSpacing="2">LAPANGAN</text>
+      <text x={20} y={22} fontSize="11" fill="var(--color-muted)" fontFamily="var(--font-geist-mono)" letterSpacing="2">LAPANGAN</text>
       {box(20, 34, 230, 92, "Dapur SPPG", ["Termometer tusuk (titik 1)", "Sensor suhu ruang + CCTV (titik 2)", "Ponsel petugas · aplikasi PWA"])}
       {box(20, 146, 230, 92, "Sekolah / posyandu", ["Termometer tusuk (titik 3, 4)", "Guru piket memindai QR label", "Logbook digital"])}
       {box(20, 258, 230, 72, "Orang tua", ["Pindai QR · tanpa akun", "Hanya status batch, tanpa data pribadi"])}
-      <text x={300} y={22} fontSize="11" fill="#66715f" fontFamily="var(--font-jetbrains)" letterSpacing="2">DETAK · MODUL KE-8 SIPGN</text>
-      {box(300, 34, 300, 120, "API DETAK (Next.js · serverless)", ["POST /readings · /actions · /ip", "GET /batches · /alerts · /inspections", "Validasi zod · peran dari SSO SIPGN", "Jam dicap server, bukan klien"], "#e3ebdc", "#3b5a2c", "#2c4520")}
-      {box(300, 174, 300, 104, "Mesin Indeks Paparan", ["Newton + Ratkowsky + lag Baranyi", "k diukur dari dua pembacaan", "P95 · proyeksi ke jam makan", "Status Aman / Waspada / Buang"], "#fde8d8", "#e5600e", "#9a3f06")}
+      <text x={300} y={22} fontSize="11" fill="var(--color-muted)" fontFamily="var(--font-geist-mono)" letterSpacing="2">DETAK · MODUL KE-8 SIPGN</text>
+      {box(300, 34, 300, 120, "API DETAK (Next.js · serverless)", ["POST /readings · /actions · /ip", "GET /batches · /alerts · /inspections", "Validasi zod · peran dari SSO SIPGN", "Jam dicap server, bukan klien"], "var(--color-daun-tint)", "var(--color-daun)", "var(--color-daun-2)")}
+      {box(300, 174, 300, 104, "Mesin Indeks Paparan", ["Newton + Ratkowsky + lag Baranyi", "k diukur dari dua pembacaan", "P95 · proyeksi ke jam makan", "Status Aman / Waspada / Buang"], "var(--color-detak-tint)", "var(--color-detak)", "var(--color-ink)")}
       {box(300, 298, 300, 84, "Penyimpanan kejadian (Postgres)", ["detak_event: append-only", "pembacaan, tahan, lepas, inspeksi", "indeks per hari & per batch"])}
-      <text x={650} y={22} fontSize="11" fill="#66715f" fontFamily="var(--font-jetbrains)" letterSpacing="2">SUMBER & LAYAR</text>
-      {box(650, 34, 210, 92, "SIPGN (data induk)", ["Daftar SPPG & sekolah", "Rencana distribusi harian", "Akun & peran (SSO)"], "#f4f5f2")}
-      {box(650, 146, 210, 72, "Notifikasi", ["WhatsApp/SMS gateway SIPGN", "saat peringatan dini & ditahan"], "#f4f5f2")}
+      <text x={650} y={22} fontSize="11" fill="var(--color-muted)" fontFamily="var(--font-geist-mono)" letterSpacing="2">SUMBER & LAYAR</text>
+      {box(650, 34, 210, 92, "SIPGN (data induk)", ["Daftar SPPG & sekolah", "Rencana distribusi harian", "Akun & peran (SSO)"], "var(--color-paper-2)")}
+      {box(650, 146, 210, 72, "Notifikasi", ["WhatsApp/SMS gateway SIPGN", "saat peringatan dini & ditahan"], "var(--color-paper-2)")}
       {box(880, 34, 200, 70, "Layar Dapur", ["/dapur · catat suhu, cetak QR"])}
       {box(880, 116, 200, 70, "Layar Sekolah", ["/cek · satu angka, satu warna"])}
       {box(880, 198, 200, 70, "Control panel Dinas", ["/dinas · tahan batch, antrean"])}
@@ -63,11 +63,11 @@ function Architecture() {
       {arrow(600, 100, 880, 150)}
       {arrow(600, 130, 880, 232)}
       {arrow(600, 145, 880, 314)}
-      <rect x={20} y={400} width={1060} height={52} rx={12} fill="#17201a" />
-      <text x={40} y={424} fontSize="12" fill="#ffffff" fontWeight={700}>
+      <rect x={20} y={400} width={1060} height={52} rx={12} fill="var(--color-ink)" />
+      <text x={40} y={424} fontSize="12" fill="var(--color-card)" fontWeight={700}>
         Di prototipe ini:
       </text>
-      <text x={40} y={442} fontSize="11.5" fill="#cfd5cc">
+      <text x={40} y={442} fontSize="11.5" fill="var(--color-line)">
         data induk SIPGN dan pembacaan perangkat disimulasikan deterministik dari angka resmi; API, mesin Indeks Paparan, penyimpanan kejadian, dan semua layar sudah berjalan seperti produksi.
       </text>
     </svg>
@@ -95,23 +95,25 @@ export default function ImplementasiPage() {
   const readsPerDay = schools * 4;
   const natReads = Math.round((readsPerDay / PILOT_TOTAL_SPPG) * NATIONAL.sppg);
   return (
-    <main className="mx-auto max-w-7xl px-4 pb-24 pt-8 sm:px-6">
-      <Eyebrow>Implementasi · dari pilot ke 29.991 dapur</Eyebrow>
-      <h1 className="mt-2 max-w-3xl font-display text-4xl font-extrabold tracking-tight">Bagaimana DETAK berjalan di lapangan, dan apa yang sudah benar-benar dibangun.</h1>
+    <main className="mx-auto max-w-7xl px-4 pb-28 pt-10 sm:px-6">
+      <h1 className="max-w-4xl text-[clamp(2.2rem,5vw,4rem)] font-extrabold leading-[0.95] tracking-[-0.04em]">Yang sudah berjalan, dan cara memasangnya.</h1>
+      <p className="lede mt-4 max-w-xl text-lg">
+        <b>Modul ke-8 SIPGN: satu API, empat layar, satu mesin hitung.</b> Semua yang tampil di prototipe ini memanggil API yang sama.
+      </p>
 
       <section className="card mt-8 p-5" data-tour="arch">
-        <h2 className="font-display text-2xl font-bold">Arsitektur</h2>
+        <h2 className="text-xl font-bold">Arsitektur</h2>
         <div className="mt-4">
           <Architecture />
         </div>
       </section>
 
-      <section className="mt-6 grid gap-6 lg:grid-cols-2">
+      <section className="mt-6 grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-2">
         <div className="card overflow-x-auto p-5" data-tour="roles">
-          <h2 className="font-display text-2xl font-bold">Siapa boleh melakukan apa</h2>
+          <h2 className="text-xl font-bold">Siapa boleh melakukan apa</h2>
           <table className="mt-4 w-full min-w-[480px] text-sm">
             <thead>
-              <tr className="border-b border-line text-left text-xs text-muted">
+              <tr className="border-y border-line bg-paper text-left font-mono text-[10px] uppercase tracking-wider text-muted">
                 <th className="py-2 pr-3">Tindakan</th>
                 <th className="py-2 pr-2 text-center">SPPG</th>
                 <th className="py-2 pr-2 text-center">Sekolah</th>
@@ -130,7 +132,7 @@ export default function ImplementasiPage() {
                 ["Dashboard provinsi & antrean", "", "", "✓", "✓"],
                 ["Indikator pilot nasional", "", "", "", "✓"],
               ].map(([a, ...cells]) => (
-                <tr key={a} className="border-b border-line/60">
+                <tr key={a} className="border-b border-line">
                   <td className="py-2 pr-3">{a}</td>
                   {cells.map((c, i) => (
                     <td key={i} className="py-2 pr-2 text-center font-bold text-daun">
@@ -145,36 +147,36 @@ export default function ImplementasiPage() {
         </div>
 
         <div className="card p-5" data-tour="slo">
-          <h2 className="font-display text-2xl font-bold">Beban & target layanan</h2>
+          <h2 className="text-xl font-bold">Beban & target layanan</h2>
           <dl className="mt-4 grid grid-cols-2 gap-4 text-sm">
             <div>
               <dt className="text-xs text-muted">Pembacaan per hari · pilot</dt>
-              <dd className="font-display text-2xl font-bold tnum">{fmtInt(readsPerDay)}</dd>
+              <dd className=" text-2xl font-bold tnum">{fmtInt(readsPerDay)}</dd>
               <dd className="text-xs text-muted">{fmtInt(schools)} batch × 4 titik</dd>
             </div>
             <div>
               <dt className="text-xs text-muted">Pembacaan per hari · nasional</dt>
-              <dd className="font-display text-2xl font-bold tnum">±{fmtInt(natReads)}</dd>
+              <dd className=" text-2xl font-bold tnum">±{fmtInt(natReads)}</dd>
               <dd className="text-xs text-muted">puncak 06.00–12.00 ≈ {Math.round(natReads / (6 * 3600))} tulis/detik</dd>
             </div>
             <div>
               <dt className="text-xs text-muted">Target respons status</dt>
-              <dd className="font-display text-2xl font-bold">p95 &lt; 300 ms</dd>
+              <dd className=" text-2xl font-bold">p95 &lt; 300 ms</dd>
               <dd className="text-xs text-muted">halaman QR orang tua & guru</dd>
             </div>
             <div>
               <dt className="text-xs text-muted">Ketersediaan</dt>
-              <dd className="font-display text-2xl font-bold">99,5%</dd>
+              <dd className=" text-2xl font-bold">99,5%</dd>
               <dd className="text-xs text-muted">jam layanan 04.00–14.00 lokal</dd>
             </div>
             <div>
               <dt className="text-xs text-muted">RPO / RTO</dt>
-              <dd className="font-display text-2xl font-bold">5 mnt / 1 jam</dd>
+              <dd className=" text-2xl font-bold">5 mnt / 1 jam</dd>
               <dd className="text-xs text-muted">PITR Postgres, deploy ulang serverless</dd>
             </div>
             <div>
               <dt className="text-xs text-muted">Sifat data</dt>
-              <dd className="font-display text-2xl font-bold">Internal</dd>
+              <dd className=" text-2xl font-bold">Internal</dd>
               <dd className="text-xs text-muted">tanpa data anak; akun petugas di SIPGN</dd>
             </div>
           </dl>
@@ -185,7 +187,7 @@ export default function ImplementasiPage() {
       </section>
 
       <section className="card mt-6 overflow-x-auto p-5" data-tour="api">
-        <h2 className="font-display text-2xl font-bold">API yang sudah berjalan</h2>
+        <h2 className="text-xl font-bold">API yang sudah berjalan</h2>
         <p className="mt-1 text-sm text-muted">Respons JSON berbentuk {"{ data, meta }"} atau {"{ error: { code, message, details } }"}. Semua parameter divalidasi; query <span className="font-mono">t=HH:MM</span> memutar ulang hari layanan pada jam tertentu.</p>
         <table className="mt-4 w-full min-w-[760px] text-sm">
           <tbody>
@@ -201,9 +203,9 @@ export default function ImplementasiPage() {
               ["GET", "/api/inspections?province=DIY", "antrean inspeksi AHP–SAW dengan alasan"],
               ["POST", "/api/ip", "kalkulator tanpa simpan untuk modul atau perangkat lain"],
             ].map(([m, p, d]) => (
-              <tr key={p} className="border-b border-line/60">
+              <tr key={p} className="border-b border-line">
                 <td className="py-2 pr-3">
-                  <span className={`rounded px-2 py-0.5 font-mono text-xs font-bold ${m === "GET" ? "bg-daun-tint text-daun-2" : "bg-detak-tint text-[#9a3f06]"}`}>{m}</span>
+                  <span className={`rounded px-2 py-0.5 font-mono text-xs font-bold ${m === "GET" ? "bg-daun-tint text-daun-2" : "bg-detak-tint text-detak"}`}>{m}</span>
                 </td>
                 <td className="py-2 pr-3 font-mono text-xs">{p}</td>
                 <td className="py-2 text-ink-2">{d}</td>
@@ -211,7 +213,7 @@ export default function ImplementasiPage() {
             ))}
           </tbody>
         </table>
-        <pre className="mt-4 overflow-x-auto rounded-xl bg-ink p-4 font-mono text-xs leading-relaxed text-[#e3ebdc]">{`curl -X POST $HOST/api/ip -H 'content-type: application/json' -d '{
+        <pre className="mt-4 overflow-x-auto rounded-xl bg-ink p-4 font-mono text-xs leading-relaxed text-night-ink">{`curl -X POST $HOST/api/ip -H 'content-type: application/json' -d '{
   "scenario": "tersentuh",
   "readings": [
     { "at": "2026-10-26T06:30:00+07:00", "foodC": 66, "ambientC": 30 },
@@ -222,12 +224,12 @@ export default function ImplementasiPage() {
 }'`}</pre>
       </section>
 
-      <section id="data" className="mt-6 grid gap-6 lg:grid-cols-[1.2fr_1fr]">
+      <section id="data" className="mt-6 grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[1.2fr_1fr]">
         <div className="card p-5" data-tour="data">
-          <h2 className="font-display text-2xl font-bold">Data pilot dan sumbernya</h2>
+          <h2 className="text-xl font-bold">Data pilot dan sumbernya</h2>
           <table className="mt-4 w-full text-sm">
             <thead>
-              <tr className="border-b border-line text-left text-xs text-muted">
+              <tr className="border-y border-line bg-paper text-left font-mono text-[10px] uppercase tracking-wider text-muted">
                 <th className="py-2 pr-3">Provinsi</th>
                 <th className="py-2 pr-3 text-right">SPPG</th>
                 <th className="py-2 pr-3 text-right">Penerima / SPPG</th>
@@ -236,7 +238,7 @@ export default function ImplementasiPage() {
             </thead>
             <tbody>
               {PROVINCES.map((p) => (
-                <tr key={p.id} className="border-b border-line/60">
+                <tr key={p.id} className="border-b border-line">
                   <td className="py-2 pr-3 font-semibold">{p.name}</td>
                   <td className="py-2 pr-3 text-right font-mono">{p.sppg}</td>
                   <td className="py-2 pr-3 text-right font-mono">{fmtInt(p.beneficiariesPerSppg)}</td>
@@ -247,7 +249,7 @@ export default function ImplementasiPage() {
           </table>
           <details className="mt-4 text-sm">
             <summary className="cursor-pointer font-semibold text-daun">Sebaran SPPG per kab/kota</summary>
-            <div className="mt-3 grid gap-4 sm:grid-cols-3">
+            <div className="mt-3 grid grid-cols-[minmax(0,1fr)] gap-4 sm:grid-cols-3">
               {PROVINCES.map((p) => {
                 const alloc = allocateSppg(p);
                 return (
@@ -270,7 +272,7 @@ export default function ImplementasiPage() {
           </details>
         </div>
         <div className="card p-5">
-          <h2 className="font-display text-2xl font-bold">Sumber</h2>
+          <h2 className="text-xl font-bold">Sumber</h2>
           <ul className="mt-3 grid gap-2 text-xs leading-relaxed">
             {Object.entries(SOURCES)
               .filter(([k]) => k !== "est")
@@ -291,10 +293,10 @@ export default function ImplementasiPage() {
       </section>
 
       <section id="faq" className="mt-6 card p-5" data-tour="faq">
-        <h2 className="font-display text-2xl font-bold">Pertanyaan yang sering muncul</h2>
-        <div className="mt-4 grid gap-2 md:grid-cols-2">
+        <h2 className="text-xl font-bold">Pertanyaan yang sering muncul</h2>
+        <div className="mt-4 grid grid-cols-[minmax(0,1fr)] gap-2 md:grid-cols-2">
           {FAQ.map(([q, a]) => (
-            <details key={q} className="rounded-xl border border-line px-4 py-3 open:bg-steel/40">
+            <details key={q} className="rounded-xl border border-line px-4 py-3 open:bg-paper-2">
               <summary className="cursor-pointer font-semibold">{q}</summary>
               <p className="mt-2 text-sm leading-relaxed text-ink-2">{a}</p>
             </details>
@@ -303,13 +305,13 @@ export default function ImplementasiPage() {
       </section>
 
       <Tour
-        id="implementasi"
+        id="implementasi-v2"
         steps={[
-          { target: "arch", title: "Bagaimana datanya mengalir", body: <>Dari termometer dan sensor di dapur dan sekolah, lewat API DETAK sebagai modul ke-8 SIPGN, sampai ke empat layar. Kotak hitam di bawah menjelaskan bagian mana yang masih disimulasikan.</> },
-          { target: "roles", title: "Hak akses dijaga di server", body: <>Setiap titik cek hanya bisa dicatat oleh pihak yang memang ada di sana. Ini menutup celah pemalsuan oleh satu pihak saja.</> },
-          { target: "slo", title: "Skala dan target", body: <>Perkiraan beban pilot dan nasional, beserta target kecepatan dan ketersediaan yang dipakai untuk memilih arsitektur.</> },
-          { target: "api", title: "Bisa dipakai modul lain", body: <>Semua layar memakai API ini. Endpoint <b>/api/ip</b> bisa dipanggil perangkat atau modul SIPGN lain tanpa menyimpan data.</> },
-          { target: "faq", title: "Pertanyaan yang sering muncul", body: <>Jawaban singkat untuk pertanyaan soal pemalsuan data, sinyal, biaya, privasi, dan batas model.</> },
+          { target: "arch", title: "Bagaimana datanya mengalir", body: <>Termometer dan sensor → API DETAK → empat layar. Kotak hitam = bagian yang masih disimulasikan.</> },
+          { target: "roles", title: "Hak akses dijaga di server", body: <>Tiap titik cek hanya bisa dicatat pihak yang ada di sana, dicek di server.</> },
+          { target: "slo", title: "Skala dan target", body: <>Beban pilot dan nasional, dengan target kecepatan dan ketersediaan.</> },
+          { target: "api", title: "Bisa dipakai modul lain", body: <>Semua layar memakai API ini. <b>/api/ip</b> bisa dipanggil modul lain tanpa menyimpan data.</> },
+          { target: "faq", title: "Pertanyaan yang sering muncul", body: <>Pemalsuan data, sinyal, biaya, privasi, dan batas model.</> },
         ]}
       />
     </main>

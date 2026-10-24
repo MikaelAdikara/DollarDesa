@@ -1,15 +1,15 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ActionButton } from "@/components/action-button";
+import { Board, BoardColumns, BoardHeader } from "@/components/board";
 import { InfoTip } from "@/components/info-tip";
 import { Tour } from "@/components/tour";
-import { ActionWindow, DayFlow, IpHistogram } from "@/components/viz";
+import { DayFlow, IpHistogram } from "@/components/viz";
 import { CriteriaBars, PChart } from "@/components/charts";
 import { GeoMap, PROVINCE_BBOX } from "@/components/geo-map";
 import { PersonaGate } from "@/components/persona-gate";
-import { Eyebrow, STATUS_META, StatusPill, fmtInt, fmtIp, fmtPct } from "@/components/ui";
+import { Figure, STATUS_META, SegLink, StatusPill, fmtInt, fmtIp, fmtPct } from "@/components/ui";
 import { statusOf } from "@/lib/model/ip";
-import { fmtClock, fmtDuration } from "@/lib/pilot/clock";
 import { AHP_WEIGHTS, PCHART, PHASE_LABEL, detailOf, inspectionQueue, kitchenRows, pChart, summarize } from "@/lib/pilot/engine";
 import { PILOT_INCIDENTS, PROVINCES, type ProvinceId } from "@/lib/pilot/reference";
 import { dayContext } from "@/lib/server/context";
@@ -35,256 +35,262 @@ export default async function DinasPage({ searchParams }: { searchParams: Promis
   const pts = focus ? pChart(focus.kitchen.id, clock.serviceDate, states) : [];
   const rows = kitchenRows(scoped);
   const tq = sp.t ? `t=${encodeURIComponent(sp.t)}&` : "";
+  const q = sp.t ? `?t=${encodeURIComponent(sp.t)}` : "";
   const base = `/dinas?${tq}prov=${prov}${reg ? `&reg=${reg}` : ""}`;
   const incidents = PILOT_INCIDENTS.filter((i) => i.province === prov);
+  const hm = clock.label.split("·").pop()?.trim();
 
   return (
-    <main className="mx-auto max-w-[1400px] px-4 pb-24 pt-6 sm:px-6">
+    <main className="mx-auto max-w-[1400px] px-4 pb-28 pt-8 sm:px-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap gap-2">
+        <nav aria-label="Provinsi" className="flex gap-1 rounded-full bg-paper-2 p-1">
           {PROVINCES.map((p) => (
-            <Link key={p.id} href={`/dinas?${tq}prov=${p.id}`} className={`rounded-xl px-4 py-2 text-sm font-semibold ${p.id === prov ? "bg-ink text-white" : "bg-white text-ink-2"}`}>
+            <SegLink key={p.id} href={`/dinas?${tq}prov=${p.id}`} active={p.id === prov}>
               {p.short}
-            </Link>
+            </SegLink>
           ))}
-        </div>
+        </nav>
         <PersonaGate role="dinas" />
       </div>
 
-      <header className="mt-5 flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <Eyebrow>Control panel · Antrean Inspeksi & Kendali · {clock.label}</Eyebrow>
-          <h1 className="mt-1 font-display text-4xl font-extrabold tracking-tight">
-            {reg ? province.regencies.find((r) => r.id === reg)!.name : province.name}
-          </h1>
-          <p className="text-sm text-muted">
-            Klaster {province.cluster} · {fmtInt(rows.length)} SPPG · {fmtInt(sum.batches)} batch · {fmtInt(sum.portions)} porsi hari ini · jam {province.tzLabel}
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-1.5">
-          <Link href={`/dinas?${tq}prov=${prov}`} className={`rounded-lg px-3 py-1.5 text-xs font-semibold ${!reg ? "bg-daun text-white" : "bg-white/70 text-ink-2"}`}>
+      <header className="mt-8">
+        <h1 className="text-[clamp(2rem,4.5vw,3.5rem)] font-extrabold leading-none tracking-[-0.035em]">{reg ? province.regencies.find((r) => r.id === reg)!.name : province.name}</h1>
+        <p className="mt-3 text-sm text-muted">
+          Klaster {province.cluster} · {fmtInt(rows.length)} SPPG · {fmtInt(sum.portions)} porsi · jam {province.tzLabel}
+        </p>
+        <nav aria-label="Kabupaten/kota" className="-mx-1 mt-5 flex gap-1 overflow-x-auto px-1 pb-1 [scrollbar-width:none]">
+          <SegLink href={`/dinas?${tq}prov=${prov}`} active={!reg}>
             Semua
-          </Link>
+          </SegLink>
           {province.regencies.map((r) => (
-            <Link key={r.id} href={`/dinas?${tq}prov=${prov}&reg=${r.id}`} className={`rounded-lg px-3 py-1.5 text-xs font-semibold ${reg === r.id ? "bg-daun text-white" : "bg-white/70 text-ink-2"}`}>
+            <SegLink key={r.id} href={`/dinas?${tq}prov=${prov}&reg=${r.id}`} active={reg === r.id}>
               {r.name}
-            </Link>
+            </SegLink>
           ))}
-        </div>
+        </nav>
       </header>
 
-      {storeError ? <p className="mt-3 rounded-lg bg-buang-tint px-3 py-2 text-sm text-buang">Penyimpanan tidak bisa dibaca: {storeError}. Data dapur tetap tampil, tindakan belum tersimpan.</p> : null}
+      {storeError ? <p className="mt-4 rounded-lg bg-buang-tint px-3 py-2 text-sm text-buang">Penyimpanan tidak bisa dibaca: {storeError}. Data dapur tetap tampil, tindakan belum tersimpan.</p> : null}
 
-      <section data-tour="kpi" className="well mt-5 grid grid-cols-2 gap-px overflow-hidden p-1 md:grid-cols-5">
-        {(
-          [
-            ["Peringatan dini", fmtInt(sum.early), "akan lewat ambang sebelum disantap", "text-buang", "Batch yang belum disantap tetapi Indeks Paparan P95-nya diproyeksikan ≥ 1,0 pada jam makan terjadwal. Proyeksi memakai suhu terakhir yang tercatat dan sensor ruang di sekolah. Inilah daftar yang harus ditindak sekarang."],
-            ["Tersaji di atas ambang", fmtInt(sum.servedOver), "tidak sempat ditahan", sum.servedOver ? "text-buang" : "", "Batch yang sudah disantap dengan IP ≥ 1,0 dan tidak ditahan. Bukan berarti pasti ada korban (IP memakai persentil ke-95 yang konservatif), tetapi sekolah tujuan perlu dipantau keluhannya hari ini."],
-            ["Ditahan hari ini", fmtInt(sum.held), `${fmtInt(sum.heldPortions)} porsi`, "", "Batch yang ditahan guru piket, SPPG, atau Satgas sehingga tidak dibagikan. Di simulasi, guru menahan ±75% batch yang terbaca Buang pada cek pra-konsumsi."],
-            ["Waspada saat makan", fmtInt(sum.byStatus.waspada), `${fmtPct(sum.byStatus.waspada / Math.max(1, sum.batches))} batch`, "text-[#8a6100]", "IP 0,8 sampai di bawah 1,0 saat jam makan: masih boleh dibagikan, tetapi harus segera. Jumlah yang tinggi menandakan jadwal distribusi terlalu mepet."],
-            ["Kelengkapan data", fmtPct(sum.completeness), `${fmtInt(sum.due - sum.recorded)} titik cek bolong`, "", "Titik cek yang sudah jatuh tempo dan benar-benar tercatat, dibagi semua titik cek yang jatuh tempo. Titik yang bolong diganti asumsi konservatif (65°C saat matang), jadi data bolong membuat IP cenderung lebih tinggi, bukan lebih rendah."],
-          ] as const
-        ).map(([k, v, s2, tone, info]) => (
-          <div key={k} className="rounded-[10px] bg-white/85 px-4 py-3">
-            <p className="flex items-center text-xs font-semibold text-muted">
-              {k}
-              <InfoTip title={k}>{info}</InfoTip>
-            </p>
-            <p className={`font-display text-3xl font-bold tnum ${tone}`}>{v}</p>
-            <p className="truncate text-xs text-muted">{s2}</p>
-          </div>
-        ))}
+      <section data-tour="kpi" className="mt-8 grid grid-cols-2 gap-y-7 border-y border-line py-6 md:grid-cols-5 md:divide-x md:divide-line">
+        <div className="pr-4 md:pr-6">
+          <Figure value={fmtInt(sum.early)} label="peringatan dini" tone={sum.early ? "buang" : undefined} info={<InfoTip title="Peringatan dini">Batch yang belum disantap, tetapi Indeks Paparan P95-nya diproyeksikan ≥ 1,0 pada jam makan. Ini daftar yang harus ditindak sekarang.</InfoTip>} />
+        </div>
+        <div className="pl-4 md:px-6">
+          <Figure value={fmtInt(sum.servedOver)} label="tersaji di atas ambang" tone={sum.servedOver ? "buang" : undefined} info={<InfoTip title="Tersaji di atas ambang">Sudah disantap dengan IP ≥ 1,0 dan tidak ditahan. Bukan berarti pasti ada korban (P95 itu konservatif), tetapi sekolahnya perlu dipantau hari ini.</InfoTip>} />
+        </div>
+        <div className="pr-4 md:px-6">
+          <Figure value={fmtInt(sum.held)} label={`ditahan · ${fmtInt(sum.heldPortions)} porsi`} info={<InfoTip title="Ditahan">Batch yang ditahan guru piket, SPPG, atau Satgas. Di simulasi, guru menahan ±75% batch yang terbaca Buang pada cek pra-konsumsi.</InfoTip>} />
+        </div>
+        <div className="pl-4 md:px-6">
+          <Figure value={fmtInt(sum.byStatus.waspada)} label="waspada saat makan" tone="waspada" info={<InfoTip title="Waspada">IP 0,8 sampai di bawah 1,0 saat jam makan: masih boleh dibagikan, tetapi segera. Jumlah tinggi berarti jadwal distribusi terlalu mepet.</InfoTip>} />
+        </div>
+        <div className="col-span-2 md:col-span-1 md:pl-6">
+          <Figure value={fmtPct(sum.completeness)} label="data lengkap" info={<InfoTip title="Kelengkapan data" align="right">Titik cek jatuh tempo yang tercatat ÷ semua titik cek jatuh tempo. Titik yang bolong diganti asumsi konservatif 65°C saat matang, jadi data bolong menaikkan IP, bukan menurunkannya.</InfoTip>} />
+        </div>
       </section>
 
-      <div className="mt-6 grid gap-6 xl:grid-cols-[1.05fr_1fr]">
-        <section aria-labelledby="alerts" data-tour="alerts" className="card p-4">
-          <div className="flex items-baseline justify-between">
-            <h2 id="alerts" className="font-display text-xl font-bold">Peringatan dini</h2>
-            <span className="text-xs text-muted">urut: waktu tersisa paling sedikit</span>
-          </div>
-          <p className="mt-1 text-xs text-muted">Batch yang Indeks Paparan-nya diproyeksikan ≥ 1,0 saat jam makan. Tahan sebelum dibagikan atau minta SPPG mempercepat distribusi.</p>
-          {alerts.length ? (
-            <div data-tour="window" className="mt-3 rounded-xl bg-steel/60 p-2">
-              <p className="flex items-center px-1 text-xs font-semibold text-ink-2">
-                Jendela tindakan
-                <InfoTip title="Jendela tindakan">Setiap baris satu batch. Hijau = masih aman dibagikan bila disantap sekarang. Merah = setelah titik ini Indeks Paparan P95 melewati 1,0. Titik hitam = jam makan terjadwal. Kalau merah dimulai sebelum titik hitam, batch akan melewati batas aman saat disantap kecuali dipercepat atau ditahan.</InfoTip>
-              </p>
-              <ActionWindow alerts={alerts} now={clock.now} tzOffset={province.tzOffset} />
-            </div>
-          ) : null}
-          <ul className="mt-3 grid max-h-[620px] gap-2 overflow-y-auto pr-1">
-            {alerts.length === 0 ? <li className="rounded-lg bg-aman-tint px-3 py-4 text-sm text-aman">Tidak ada batch yang diproyeksikan lewat ambang saat ini.</li> : null}
-            {alerts.slice(0, 40).map((a) => (
-              <li key={a.id} className="rounded-xl border border-line p-3">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <Link href={`/cek/${a.id}${sp.t ? `?t=${encodeURIComponent(sp.t)}` : ""}`} className="block truncate font-semibold hover:underline">
-                      {a.batch.school.name}
-                    </Link>
-                    <p className="truncate text-xs text-muted">
-                      {a.batch.kitchen.name} · {a.regency.name} · {fmtInt(a.batch.school.portions)} porsi · {PHASE_LABEL[a.phase]}
-                    </p>
-                  </div>
-                  <div className="shrink-0 text-right">
-                    <p className="font-mono text-sm font-semibold text-buang tnum">IP makan {fmtIp(a.ipAtMeal)}</p>
-                    <p className="text-xs text-muted">
-                      habis {a.minutesLeft <= 0 ? "sekarang" : `dalam ${fmtDuration(a.minutesLeft)}`} · makan {fmtClock(a.batch.mealAt, a.batch.tzOffset)}
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-2 flex flex-wrap items-center gap-2">
-                  <ActionButton batchId={a.id} kind="hold" reason="Ditahan Satgas: proyeksi IP ≥ 1,0 saat jam makan" label="Tahan batch" tone="danger" size="sm" t={sp.t} />
-                  <ActionButton batchId={a.id} kind="inspect" reason="Satgas menghubungi SPPG untuk percepat distribusi" label="Catat: SPPG dihubungi" tone="light" size="sm" t={sp.t} />
-                  <Link href={`${base}&k=${a.batch.kitchen.id}`} className="text-xs font-semibold text-daun underline">
-                    lihat dapur
-                  </Link>
-                </div>
-              </li>
-            ))}
-          </ul>
+      <div className="mt-8 grid grid-cols-[minmax(0,1fr)] gap-6 xl:grid-cols-[1.4fr_1fr]">
+        <section data-tour="alerts" aria-label="Peringatan dini" className="board self-start overflow-hidden">
+          <BoardHeader title="Peringatan dini" live={hm} right={<span className="font-mono text-xs text-night-muted">{alerts.length} batch · urut sisa waktu</span>} />
+          <BoardColumns action />
+          <Board
+            rows={alerts.slice(0, 40)}
+            now={clock.now}
+            t={sp.t}
+            maxH="max-h-[640px]"
+            sub={(a) => `${a.regency.name} · ${fmtInt(a.batch.school.portions)} porsi · ${PHASE_LABEL[a.phase].toLowerCase()}`}
+            empty="Tidak ada batch yang diproyeksikan lewat ambang saat ini."
+            action={(a) => (
+              <>
+                <ActionButton batchId={a.id} kind="hold" reason="Ditahan Satgas: proyeksi IP ≥ 1,0 saat jam makan" label="Tahan" tone="danger" size="sm" t={sp.t} />
+                <ActionButton batchId={a.id} kind="inspect" reason="Satgas menghubungi SPPG untuk percepat distribusi" label="SPPG dihubungi" tone="night" size="sm" t={sp.t} />
+              </>
+            )}
+          />
           {served.length ? (
-            <p className="mt-3 rounded-lg bg-buang-tint px-3 py-2 text-xs text-buang">
-              {served.length} batch sudah disantap dengan IP ≥ 1,0 hari ini. Dapurnya naik ke puncak antrean inspeksi dan pantau keluhan di sekolah tujuan.
+            <p className="border-t border-night-line px-5 py-3 text-xs text-night-muted">
+              <b className="text-buang">{served.length} batch</b> sudah disantap dengan IP ≥ 1,0. Dapurnya naik ke puncak antrean inspeksi.
             </p>
           ) : null}
         </section>
 
-        <section className="grid content-start gap-6">
-          <div data-tour="map" className="card p-4">
-            <h2 className="font-display text-xl font-bold">Peta dapur hari ini</h2>
-            <p className="mt-1 text-xs text-muted">Warna = status batch terburuk saat jam makan. Lingkaran = ada peringatan dini.</p>
-            <div className="mt-3">
-              <GeoMap
-                label={`Peta SPPG ${province.name}`}
-                bbox={PROVINCE_BBOX[prov]}
-                mode="plain"
-                highlight={prov}
-                height={420}
-                points={rows
-                  .sort((a, b) => a.maxIpAtMeal - b.maxIpAtMeal)
-                  .map((r) => ({ id: r.kitchen.id, lon: r.kitchen.lon, lat: r.kitchen.lat, color: STATUS_META[statusOf(r.maxIpAtMeal)].hex, r: prov === "DIY" ? 0.32 : 0.55, ring: r.alerts > 0, label: `${r.kitchen.name}: IP ${fmtIp(r.maxIpAtMeal)}`, href: `${base}&k=${r.kitchen.id}` }))}
-              />
-            </div>
-            {incidents.length ? (
-              <div className="mt-3 border-t border-line pt-3">
-                <p className="text-xs font-semibold text-ink-2">Insiden terdokumentasi di provinsi ini (paket data DETAK)</p>
-                <ul className="mt-1 grid gap-1 text-xs text-muted">
-                  {incidents.map((i) => (
-                    <li key={i.date + i.place}>
-                      {i.date} · {i.place} · <b className="text-ink-2">{i.victims} korban</b> · jeda {i.gap} · {i.src}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
+        <section data-tour="map" className="card self-start p-4">
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <h2 className="text-lg font-bold">Peta dapur</h2>
+            <span className="flex gap-3 text-[11px] text-muted">
+              {(["aman", "waspada", "buang"] as const).map((s) => (
+                <span key={s} className="flex items-center gap-1">
+                  <span className="h-2 w-2 rounded-full" style={{ background: STATUS_META[s].hex }} />
+                  {STATUS_META[s].label}
+                </span>
+              ))}
+              <span className="flex items-center gap-1">
+                <span className="h-2.5 w-2.5 rounded-full border border-ink" /> peringatan
+              </span>
+            </span>
           </div>
+          <div className="mt-3">
+            <GeoMap
+              label={`Peta SPPG ${province.name}`}
+              bbox={PROVINCE_BBOX[prov]}
+              mode="plain"
+              highlight={prov}
+              height={420}
+              points={rows
+                .sort((a, b) => a.maxIpAtMeal - b.maxIpAtMeal)
+                .map((r) => ({ id: r.kitchen.id, lon: r.kitchen.lon, lat: r.kitchen.lat, color: STATUS_META[statusOf(r.maxIpAtMeal)].hex, r: prov === "DIY" ? 0.32 : 0.55, ring: r.alerts > 0, label: `${r.kitchen.name}: IP ${fmtIp(r.maxIpAtMeal)}`, href: `${base}&k=${r.kitchen.id}` }))}
+            />
+          </div>
+          {incidents.length ? (
+            <ul className="mt-3 divide-y divide-line border-t border-line text-xs">
+              {incidents.map((i) => (
+                <li key={i.date + i.place} className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 py-2">
+                  <span className="min-w-0 truncate text-ink-2">
+                    {i.place} <span className="text-muted">· {i.date} · {i.src}</span>
+                  </span>
+                  <span className="font-mono text-buang tnum">{i.victims} korban</span>
+                </li>
+              ))}
+            </ul>
+          ) : null}
         </section>
       </div>
 
-      <section className="mt-6 grid gap-6 xl:grid-cols-2">
-        <div data-tour="hist" className="card p-4">
-          <h2 className="flex items-center font-display text-xl font-bold">
-            Sebaran Indeks Paparan saat makan
-            <InfoTip title="Cara membaca histogram">
-              Setiap batang = jumlah batch dengan Indeks Paparan (P95) dalam rentang 0,05. Sumbu tegak memakai skala akar supaya ekor kanan yang jarang tetap terlihat. Zona kuning 0,8–1,0 (Waspada), merah ≥ 1,0 (Buang). P50 = median, P95 = 95% batch berada di bawahnya. Dapur yang sehat menghasilkan sebaran yang menumpuk jauh di kiri garis 0,8.
-            </InfoTip>
-          </h2>
-          <p className="mt-1 text-xs text-muted">{fmtInt(scoped.length)} batch hari ini, termasuk yang belum disantap (memakai proyeksi).</p>
-          <div className="mt-3">
+      <section className="mt-6 grid grid-cols-[minmax(0,1fr)] gap-6 xl:grid-cols-2">
+        <figure data-tour="hist" className="card p-5">
+          <figcaption className="flex items-baseline justify-between gap-2">
+            <h2 className="flex items-center text-lg font-bold">
+              Sebaran IP saat makan
+              <InfoTip title="Cara membaca">
+                Setiap batang = jumlah batch dalam rentang IP 0,05. Sumbu tegak berskala akar supaya ekor kanan tetap terlihat. Kuning 0,8–1,0 Waspada, merah ≥ 1,0 Buang. Batch yang belum disantap memakai proyeksi.
+              </InfoTip>
+            </h2>
+            <span className="font-mono text-xs text-muted tnum">{fmtInt(scoped.length)} batch</span>
+          </figcaption>
+          <div className="mt-4">
             <IpHistogram states={scoped} />
           </div>
-        </div>
-        <div data-tour="flow" className="card p-4">
-          <h2 className="flex items-center font-display text-xl font-bold">
-            Ritme operasi hari ini
-            <InfoTip title="Ritme operasi">
-              Jumlah batch di setiap tahap, dihitung tiap 10 menit dari jadwal matang, berangkat, tiba, dan makan. Puncak oranye = jam sibuk distribusi, saat Satgas paling perlu siaga. Garis hitam = waktu sekarang di layar ini.
-            </InfoTip>
-          </h2>
-          <p className="mt-1 text-xs text-muted">Jam {province.tzLabel}. Gunakan untuk menjadwalkan patroli dan kunjungan.</p>
-          <div className="mt-3">
+        </figure>
+        <figure data-tour="flow" className="card p-5">
+          <figcaption className="flex items-baseline justify-between gap-2">
+            <h2 className="flex items-center text-lg font-bold">
+              Ritme operasi
+              <InfoTip title="Ritme operasi" align="right">
+                Jumlah batch di tiap tahap, dihitung tiap 10 menit. Puncak oranye = jam sibuk distribusi, saat Satgas paling perlu siaga. Garis hitam = sekarang.
+              </InfoTip>
+            </h2>
+            <span className="font-mono text-xs text-muted">jam {province.tzLabel}</span>
+          </figcaption>
+          <div className="mt-4">
             <DayFlow states={scoped} now={clock.now} tzOffset={province.tzOffset} />
           </div>
-        </div>
+        </figure>
       </section>
 
-      <section className="mt-6 grid gap-6 xl:grid-cols-[1.05fr_1fr]">
-        <div data-tour="queue" className="card p-4">
-          <div className="flex items-baseline justify-between">
-            <h2 className="font-display text-xl font-bold">Antrean inspeksi</h2>
+      <section className="mt-6 grid grid-cols-[minmax(0,1fr)] gap-6 xl:grid-cols-[1.1fr_1fr]">
+        <div data-tour="queue" className="card self-start overflow-hidden">
+          <div className="flex items-baseline justify-between gap-2 px-5 pb-3 pt-5">
+            <h2 className="flex items-center text-lg font-bold">
+              Antrean inspeksi
+              <InfoTip title="Urutan kunjungan">Dapur dengan peringatan hari ini didahulukan. Sisanya diurutkan skor AHP–SAW dari riwayat 10 hari sekolah terakhir. Klik baris untuk melihat rinciannya.</InfoTip>
+            </h2>
             <span className="font-mono text-[11px] text-muted">AHP–SAW · CR 0,0115</span>
           </div>
-          <p className="mt-1 text-xs text-muted">Dapur dengan peringatan hari ini didahulukan; sisanya diurutkan dengan skor AHP–SAW dari riwayat 10 hari sekolah terakhir.</p>
-          <ol className="mt-3 grid gap-1.5">
-            {queue.slice(0, 12).map((r, i) => (
-              <li key={r.kitchen.id}>
-                <Link href={`${base}&k=${r.kitchen.id}`} scroll={false} className={`grid grid-cols-[28px_1fr_auto] items-center gap-3 rounded-xl border px-3 py-2 ${focus?.kitchen.id === r.kitchen.id ? "border-daun bg-daun-tint/60" : "border-line hover:border-ink/30"}`}>
-                  <span className="font-mono text-sm text-muted">{i + 1}</span>
-                  <span className="min-w-0">
-                    <span className="block truncate text-sm font-semibold">{r.kitchen.name} <span className="font-normal text-muted">· {r.regency.name}</span></span>
-                    <span className="block truncate text-xs text-muted">{r.reasons.join(" · ") || "tidak ada temuan menonjol"}</span>
-                  </span>
-                  <span className="font-mono text-sm tnum">{r.score.toFixed(3).replace(".", ",")}</span>
-                </Link>
-              </li>
-            ))}
+          <div className="grid grid-cols-[32px_minmax(0,1fr)_64px] gap-3 border-y border-line bg-paper px-5 py-2 font-mono text-[10px] uppercase tracking-wider text-muted">
+            <span>#</span>
+            <span>Dapur · alasan</span>
+            <span className="text-right">Skor</span>
+          </div>
+          <ol className="divide-y divide-line">
+            {queue.slice(0, 12).map((r, i) => {
+              const on = focus?.kitchen.id === r.kitchen.id;
+              return (
+                <li key={r.kitchen.id}>
+                  <Link href={`${base}&k=${r.kitchen.id}`} scroll={false} aria-current={on ? "true" : undefined} className={`relative grid grid-cols-[32px_minmax(0,1fr)_64px] items-center gap-3 px-5 py-2.5 transition-colors duration-150 ${on ? "bg-daun-tint" : "hover:bg-paper"}`}>
+                    {on ? <span aria-hidden className="absolute inset-y-0 left-0 w-[3px] bg-daun" /> : null}
+                    <span className="font-mono text-sm text-muted tnum">{i + 1}</span>
+                    <span className="min-w-0">
+                      <span className="block truncate text-sm font-semibold">
+                        {r.kitchen.name} <span className="font-normal text-muted">· {r.regency.name}</span>
+                      </span>
+                      <span className="block truncate text-xs text-muted">{r.reasons.join(" · ") || "tidak ada temuan menonjol"}</span>
+                    </span>
+                    <span className="text-right font-mono text-sm tnum">{r.score.toFixed(3).replace(".", ",")}</span>
+                  </Link>
+                </li>
+              );
+            })}
           </ol>
         </div>
 
         {focus ? (
-          <div data-tour="pchart" className="card p-4">
-            <Eyebrow>Dapur terpilih</Eyebrow>
-            <div className="mt-1 flex flex-wrap items-baseline justify-between gap-2">
-              <h2 className="font-display text-xl font-bold">{focus.kitchen.name}</h2>
-              <Link href={`/dapur/${focus.kitchen.id}${sp.t ? `?t=${encodeURIComponent(sp.t)}` : ""}`} className="text-xs font-semibold text-daun underline">
-                buka layar dapur
+          <div data-tour="pchart" className="card self-start p-5">
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <h2 className="text-lg font-bold">{focus.kitchen.name}</h2>
+              <Link href={`/dapur/${focus.kitchen.id}${q}`} className="whitespace-nowrap text-xs font-semibold text-daun hover:underline">
+                Buka layar dapur →
               </Link>
             </div>
-            <p className="text-xs text-muted">
-              {focus.regency.name} · {fmtInt(focus.kitchen.beneficiaries)} penerima · {focus.kitchen.slhs ? "ber-SLHS" : "belum ber-SLHS"} · lewat ambang {fmtPct(focus.exceedRate)} batch (10 hari)
+            <p className="mt-1 text-xs text-muted">
+              {focus.regency.name} · {fmtInt(focus.kitchen.beneficiaries)} penerima · {focus.kitchen.slhs ? "ber-SLHS" : "belum ber-SLHS"}
             </p>
-            <p className="mt-3 flex items-center text-xs font-semibold text-ink-2">
-              Komponen skor AHP–SAW
-              <InfoTip title="Skor antrean inspeksi">
-                Skor = Σ bobot × nilai kriteria (0–1). Bobot AHP dari matriks perbandingan berpasangan tim (CR 0,0115 &lt; 0,10): riwayat lewat ambang 10 hari 0,466; kepatuhan (SLHS dan kelengkapan data) 0,277; skala penerima 0,161; keterpencilan 0,096. Dapur yang punya peringatan hari ini selalu didahulukan.
+
+            <dl className="mt-5 grid grid-cols-2 divide-x divide-line border-y border-line py-4">
+              <div className="pr-4">
+                <dt className="text-xs text-muted">Lewat ambang, 10 hari</dt>
+                <dd className={`font-mono text-2xl tnum ${focus.exceedRate > PCHART.p0 ? "text-buang" : ""}`}>{fmtPct(focus.exceedRate)}</dd>
+              </div>
+              <div className="pl-4">
+                <dt className="text-xs text-muted">Skor antrean</dt>
+                <dd className="font-mono text-2xl tnum">{focus.score.toFixed(3).replace(".", ",")}</dd>
+              </div>
+            </dl>
+
+            <h3 className="mt-5 flex items-center text-sm font-semibold">
+              Kartu kendali p
+              <InfoTip title="Kartu kendali p" align="right">
+                20 ompreng per hari dicek. p₀ = 2%. UCL = p₀ + 3√(p₀(1−p₀)/20) = 0,114, jadi sinyal muncul bila ≥ 3 dari 20 lewat ambang. Alarm palsu rata-rata sekali per 141 hari; pergeseran ke 10% terdeteksi dalam ±3,1 hari.
               </InfoTip>
-            </p>
+            </h3>
+            <PChart points={pts} ucl={PCHART.ucl} p0={PCHART.p0} />
+
+            <h3 className="mt-5 flex items-center text-sm font-semibold">
+              Komponen skor
+              <InfoTip title="Skor AHP–SAW" align="right">
+                Skor = Σ bobot × nilai kriteria (0–1). Bobot AHP (CR 0,0115): riwayat lewat ambang 0,466; kepatuhan (SLHS, kelengkapan data) 0,277; skala penerima 0,161; keterpencilan 0,096.
+              </InfoTip>
+            </h3>
             <div className="mt-2">
               <CriteriaBars criteria={focus.criteria} weights={AHP_WEIGHTS} />
             </div>
-            <div className="mt-4">
-              <p className="flex items-center text-xs font-semibold text-ink-2">
-                Kartu kendali p · 20 ompreng per hari
-                <InfoTip title="Kartu kendali p" align="right">
-                  Setiap hari 20 ompreng dari dapur ini dicek. Proporsi dasar lewat ambang p₀ = 2%. Batas kendali atas UCL = p₀ + 3√(p₀(1−p₀)/20) = 0,114, artinya sinyal muncul bila ≥ 3 dari 20 ompreng lewat ambang. Alarm palsu rata-rata sekali per 141 hari; pergeseran ke 10% terdeteksi rata-rata dalam 3,1 hari.
-                </InfoTip>
-              </p>
-              <PChart points={pts} ucl={PCHART.ucl} p0={PCHART.p0} />
-            </div>
-            <div className="mt-2 flex flex-wrap gap-2">
+
+            <ul className="mt-5 flex flex-wrap gap-1.5">
               {scoped
                 .filter((s) => s.batch.kitchen.id === focus.kitchen.id)
                 .slice(0, 10)
                 .map((s) => (
-                  <Link key={s.id} href={`/cek/${s.id}${sp.t ? `?t=${encodeURIComponent(sp.t)}` : ""}`} className="flex items-center gap-1.5 rounded-lg border border-line px-2 py-1 text-xs hover:border-ink/40">
-                    <StatusPill status={s.statusAtMeal} /> <span className="max-w-[140px] truncate">{s.batch.school.name}</span>
-                  </Link>
+                  <li key={s.id}>
+                    <Link href={`/cek/${s.id}${q}`} className="flex items-center gap-1.5 rounded-full border border-line py-1 pl-1 pr-2.5 text-xs transition-colors duration-150 hover:border-ink">
+                      <StatusPill status={s.statusAtMeal} /> <span className="max-w-[150px] truncate">{s.batch.school.name}</span>
+                    </Link>
+                  </li>
                 ))}
-            </div>
+            </ul>
           </div>
         ) : null}
       </section>
+
       <Tour
-        id="dinas"
+        id="dinas-v2"
         steps={[
-          { target: "kpi", title: "Lima angka yang dibaca pertama", body: <>Ringkasan provinsi saat ini. Merah = perlu tindakan. Klik ikon <b>i</b> di tiap angka untuk definisi dan cara hitungnya.</> },
-          { target: "window", title: "Berapa lama waktu untuk bertindak", body: <>Satu baris satu batch bermasalah. Hijau = masih aman, merah = sudah lewat batas aman. Kalau merah mulai sebelum titik hitam (jam makan), batch itu akan disantap dalam kondisi berisiko.</> },
-          { target: "alerts", title: "Tindak langsung dari sini", body: <><b>Tahan batch</b> mengirim status Ditahan ke label QR dan layar guru seketika. <b>Catat: SPPG dihubungi</b> menyimpan jejak tindakan untuk audit. Klik nama sekolah untuk melihat grafik perjalanan suhunya.</> },
-          { target: "map", title: "Di mana dapurnya", body: <>Setiap titik satu SPPG, warnanya status terburuk hari ini. Lingkaran = ada peringatan dini. Indeks Moran nasional tidak signifikan, jadi titik merah biasanya tersebar: masalahnya di proses dapur, bukan wilayah.</> },
-          { target: "hist", title: "Seberapa sehat provinsi ini hari ini", body: <>Sebaran Indeks Paparan semua batch. Yang penting adalah ekor kanan: batch di zona merah. P95 menunjukkan batas atas kebanyakan batch.</> },
-          { target: "flow", title: "Jam sibuk distribusi", body: <>Puncak oranye = banyak batch di jalan. Jadwalkan patroli dan siaga Satgas di jam ini.</> },
-          { target: "queue", title: "Dapur mana yang dikunjungi duluan", body: <>Antrean inspeksi dengan skor AHP–SAW. Alasan tiap peringkat tertulis di bawah nama dapur, supaya urutan kunjungan bisa dipertanggungjawabkan.</> },
-          { target: "pchart", title: "Kebetulan atau pola?", body: <>Kartu kendali p 20 hari. Titik merah di atas garis UCL = sinyal statistik bahwa dapur ini bergeser dari normal, bukan sekadar sial satu hari.</> },
+          { target: "kpi", title: "Lima angka pertama", body: <>Merah berarti perlu tindakan. Ikon <b>i</b> menjelaskan cara hitungnya.</> },
+          { target: "alerts", title: "Tindak dari papan ini", body: <><b>Tahan</b> langsung mengubah label QR dan layar guru. Bar = sisa jendela aman sebelum jam makan.</> },
+          { target: "map", title: "Di mana dapurnya", body: <>Satu titik satu SPPG. Lingkaran = ada peringatan dini. Klik titik untuk memilih dapur.</> },
+          { target: "hist", title: "Ekor kanan", body: <>Yang dicari adalah batch di zona merah, bukan rata-ratanya.</> },
+          { target: "flow", title: "Jam sibuk", body: <>Puncak oranye = banyak batch di jalan. Siagakan Satgas di jam ini.</> },
+          { target: "queue", title: "Urutan kunjungan", body: <>Skor AHP–SAW dengan alasan tertulis, jadi urutannya bisa dipertanggungjawabkan.</> },
+          { target: "pchart", title: "Kebetulan atau pola?", body: <>Titik di atas garis UCL = dapur bergeser dari normal, bukan sial satu hari.</> },
         ]}
       />
     </main>

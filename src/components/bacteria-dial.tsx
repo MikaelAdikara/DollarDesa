@@ -34,53 +34,59 @@ export function BacteriaDial({ wallHours, ip, status, size = 300, caption = true
       <svg viewBox="0 0 300 300" width={size} height={size} role="img" aria-label={`Jam bakteri: ${wallHours.toFixed(1)} jam sejak matang, Indeks Paparan ${fmtIp(ip)}, status ${meta.label}`} className="max-w-full">
         <defs>
           <radialGradient id="dial-steel" cx="40%" cy="35%" r="75%">
-            <stop offset="0%" stopColor="#ffffff" />
-            <stop offset="70%" stopColor="#eef1ed" />
-            <stop offset="100%" stopColor="#d9ded7" />
+            <stop offset="0%" stopColor="var(--color-card)" />
+            <stop offset="70%" stopColor="var(--color-paper-2)" />
+            <stop offset="100%" stopColor="var(--color-line)" />
           </radialGradient>
         </defs>
-        <circle cx={c} cy={c} r={146} fill="#17201a" />
+        <circle cx={c} cy={c} r={146} fill="var(--color-ink)" />
         <circle cx={c} cy={c} r={138} fill="url(#dial-steel)" />
         {/* zones on the bacteria ring: aman < 0.8, waspada 0.8–1.0 */}
-        <path d={arc(0, 0.8, R)} stroke="#def0e2" strokeWidth={16} fill="none" />
-        <path d={arc(0.8, 1, R)} stroke="#fbf0cf" strokeWidth={16} fill="none" />
+        <path d={arc(0, 0.8, R)} stroke="var(--color-aman-tint)" strokeWidth={16} fill="none" />
+        <path d={arc(0.8, 1, R)} stroke="var(--color-waspada-tint)" strokeWidth={16} fill="none" />
         {/* bacteria progress (first lap, then overflow lap in red) */}
         {ipFrac > 0 ? <path d={arc(0, Math.min(ipFrac, 1), R)} stroke={meta.hex} strokeWidth={16} fill="none" strokeLinecap="butt" /> : null}
-        {ipFrac > 1 ? <path d={arc(0, Math.min(ipFrac - 1, 1), R - 18)} stroke="#cc3418" strokeWidth={8} fill="none" strokeDasharray="4 3" /> : null}
+        {ipFrac > 1 ? <path d={arc(0, Math.min(ipFrac - 1, 1), R - 18)} stroke="var(--color-buang)" strokeWidth={8} fill="none" strokeDasharray="4 3" /> : null}
         {ticks.map((i) => {
           const major = i % 12 === 0;
           const [x0, y0] = pt(i / 48, major ? 96 : 101);
           const [x1, y1] = pt(i / 48, 106);
-          return <line key={i} x1={x0} y1={y0} x2={x1} y2={y1} stroke="#17201a" strokeOpacity={major ? 0.8 : 0.3} strokeWidth={major ? 2 : 1} />;
+          return <line key={i} x1={x0} y1={y0} x2={x1} y2={y1} stroke="var(--color-ink)" strokeOpacity={major ? 0.8 : 0.3} strokeWidth={major ? 2 : 1} />;
         })}
         {[0, 1, 2, 3].map((h) => {
           const [x, y] = pt(h / 4, 80);
           return (
-            <text key={h} x={x} y={y + 4} textAnchor="middle" fontSize="13" fontFamily="var(--font-jetbrains)" fill="#3c4a3e">
+            <text key={h} x={x} y={y + 4} textAnchor="middle" fontSize="13" fontFamily="var(--font-geist-mono)" fill="var(--color-ink-2)">
               {h === 0 ? "4|0" : `${h}j`}
             </text>
           );
         })}
         {/* wall hand */}
-        <line x1={c} y1={c} x2={wx} y2={wy} stroke="#17201a" strokeWidth={5} strokeLinecap="round" />
+        <line x1={c} y1={c} x2={wx} y2={wy} stroke="var(--color-ink)" strokeWidth={5} strokeLinecap="round" />
         {/* bacteria hand */}
         <line x1={c} y1={c} x2={bx} y2={by} stroke={meta.hex} strokeWidth={4} strokeLinecap="round" />
-        <circle cx={bx} cy={by} r={6} fill={meta.hex} stroke="#fff" strokeWidth={2} />
-        <circle cx={c} cy={c} r={30} fill="#17201a" />
-        <text x={c} y={c + 2} textAnchor="middle" fontSize="19" fontWeight={700} fill="#fff" fontFamily="var(--font-bricolage)">
+        <circle cx={bx} cy={by} r={6} fill={meta.hex} stroke="var(--color-card)" strokeWidth={2} />
+        <circle cx={c} cy={c} r={30} fill="var(--color-ink)" />
+        <text x={c} y={c + 2} textAnchor="middle" fontSize="19" fontWeight={700} fill="var(--color-card)" fontFamily="var(--font-schibsted)">
           {fmtIp(ip)}
         </text>
-        <text x={c} y={c + 16} textAnchor="middle" fontSize="8" letterSpacing="1.5" fill="#cfd5cc" fontFamily="var(--font-jetbrains)">
+        <text x={c} y={c + 16} textAnchor="middle" fontSize="8" letterSpacing="1.5" fill="var(--color-line)" fontFamily="var(--font-geist-mono)">
           IP
         </text>
       </svg>
       {caption ? (
-        <figcaption className="mt-3 grid w-full max-w-xs grid-cols-2 gap-2 text-xs">
-          <span className="flex items-center gap-2 text-ink-2">
-            <span className="h-1 w-5 rounded bg-ink" /> Jam dinding: <b className="tnum">{fmtH(wallHours)}</b>
+        <figcaption className="mt-4 grid w-full max-w-[280px] grid-cols-2 divide-x divide-line border-t border-line pt-3 text-center">
+          <span>
+            <span className="flex items-center justify-center gap-1.5 text-[11px] text-muted">
+              <span className="h-[3px] w-4 rounded bg-ink" /> jam dinding
+            </span>
+            <span className="mt-0.5 block font-mono text-base tnum">{fmtH(wallHours)}</span>
           </span>
-          <span className="flex items-center gap-2 text-ink-2">
-            <span className="h-1 w-5 rounded" style={{ background: meta.hex }} /> Jam bakteri: <b className="tnum">{fmtH(ip * 4)}</b>
+          <span>
+            <span className="flex items-center justify-center gap-1.5 text-[11px] text-muted">
+              <span className="h-[3px] w-4 rounded" style={{ background: meta.hex }} /> jam bakteri
+            </span>
+            <span className="mt-0.5 block font-mono text-base tnum">{fmtH(ip * 4)}</span>
           </span>
         </figcaption>
       ) : null}

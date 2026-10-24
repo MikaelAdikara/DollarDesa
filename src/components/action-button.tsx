@@ -5,12 +5,13 @@ import { useState, useTransition } from "react";
 
 const DONE = { hold: "Ditahan", release: "Dilepas", inspect: "Kunjungan dicatat" } as const;
 
-export function ActionButton({ batchId, kind, reason, label, t, tone = "dark", size = "md" }: { batchId: string; kind: "hold" | "release" | "inspect"; reason: string; label: string; t?: string; tone?: "dark" | "light" | "danger"; size?: "sm" | "md" }) {
+export function ActionButton({ batchId, kind, reason, label, t, tone = "dark", size = "md" }: { batchId: string; kind: "hold" | "release" | "inspect"; reason: string; label: string; t?: string; tone?: "dark" | "light" | "danger" | "night"; size?: "sm" | "md" }) {
   const router = useRouter();
   const [state, setState] = useState<"idle" | "busy" | "done" | "err">("idle");
   const [err, setErr] = useState("");
   const [, start] = useTransition();
-  const cls = tone === "danger" ? "bg-buang text-white hover:bg-[#a92a12]" : tone === "dark" ? "bg-ink text-white hover:bg-ink-2" : "border border-line bg-white text-ink hover:border-ink/40";
+  const cls =
+    tone === "danger" ? "bg-buang text-card hover:opacity-90" : tone === "dark" ? "bg-ink text-card hover:bg-ink-2" : tone === "night" ? "border border-night-line text-night-ink hover:bg-night-2" : "border border-line bg-card text-ink hover:border-ink/40";
   return (
     <span className="inline-flex flex-col">
       <button
@@ -28,7 +29,7 @@ export function ActionButton({ batchId, kind, reason, label, t, tone = "dark", s
           setState("done");
           start(() => router.refresh());
         }}
-        className={`rounded-lg font-semibold transition disabled:opacity-70 ${cls} ${size === "sm" ? "px-2.5 py-1 text-xs" : "px-4 py-2 text-sm"}`}
+        className={`whitespace-nowrap rounded-full font-semibold transition-colors duration-150 disabled:opacity-70 ${cls} ${size === "sm" ? "px-3 py-1.5 text-xs" : "px-5 py-2.5 text-sm"}`}
       >
         {state === "busy" ? "Menyimpan…" : state === "done" ? DONE[kind] : label}
       </button>

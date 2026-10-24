@@ -13,9 +13,9 @@ export function PersonaGate({ role }: { role: keyof typeof TITLE }) {
       .catch(() => setReady(true));
   }, [role]);
   return (
-    <span className="inline-flex items-center gap-2 rounded-full border border-line bg-white px-2.5 py-1 text-xs text-ink-2">
-      <span className={`h-2 w-2 rounded-full ${ready ? "bg-aman" : "bg-line"}`} />
-      Masuk sebagai <b>{TITLE[role]}</b> <span className="text-muted">(akun demo)</span>
+    <span className="inline-flex items-center gap-2 whitespace-nowrap text-xs text-muted" title="Akun demo. Produksi memakai SSO SIPGN.">
+      <span className={`h-1.5 w-1.5 rounded-full ${ready ? "bg-aman" : "bg-line-2"}`} />
+      <span className="font-semibold text-ink-2">{TITLE[role]}</span> · akun demo
     </span>
   );
 }

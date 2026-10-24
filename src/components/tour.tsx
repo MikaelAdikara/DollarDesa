@@ -113,7 +113,7 @@ export function Tour({ id, steps, autoStart = true }: { id: string; steps: TourS
           setI(0);
           setOpen(true);
         }}
-        className="fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full bg-ink px-4 py-2.5 text-sm font-semibold text-white shadow-[0_10px_30px_-10px_rgba(0,0,0,0.6)] transition hover:bg-daun"
+        className="fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full bg-ink px-4 py-2.5 text-sm font-semibold text-card shadow-[0_10px_30px_-10px_oklch(21%_0.02_145/0.5)] transition hover:bg-daun"
       >
         <span aria-hidden className="grid h-5 w-5 place-items-center rounded-full bg-detak text-[11px] font-bold">?</span>
         Panduan layar ini
@@ -124,13 +124,13 @@ export function Tour({ id, steps, autoStart = true }: { id: string; steps: TourS
             <div
               aria-hidden
               className="pointer-events-none fixed rounded-2xl ring-4 ring-detak transition-all duration-300"
-              style={{ top: rect.top, left: rect.left, width: rect.width, height: rect.height, boxShadow: "0 0 0 9999px rgba(10,14,11,0.74)" }}
+              style={{ top: rect.top, left: rect.left, width: rect.width, height: rect.height, boxShadow: "0 0 0 9999px var(--color-scrim)" }}
             />
           ) : (
-            <div aria-hidden className="fixed inset-0 bg-[rgba(10,14,11,0.74)]" />
+            <div aria-hidden className="fixed inset-0 bg-scrim" />
           )}
           <div className="fixed inset-0" onClick={close} aria-hidden />
-          <div className="fixed w-[min(360px,calc(100vw-24px))] rounded-2xl bg-white p-5 shadow-2xl" style={cardStyle}>
+          <div className="fixed w-[min(360px,calc(100vw-24px))] rounded-2xl bg-card p-5 shadow-2xl" style={cardStyle}>
             <div className="flex items-center justify-between">
               <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-detak">
                 Langkah {i + 1} dari {steps.length}
@@ -139,7 +139,7 @@ export function Tour({ id, steps, autoStart = true }: { id: string; steps: TourS
                 Lewati
               </button>
             </div>
-            <h2 id="tour-title" className="mt-2 font-display text-xl font-bold leading-tight">
+            <h2 id="tour-title" className="mt-2 text-xl font-bold leading-tight">
               {step.title}
             </h2>
             <div className="mt-2 text-sm leading-relaxed text-ink-2">{step.body}</div>
@@ -151,11 +151,11 @@ export function Tour({ id, steps, autoStart = true }: { id: string; steps: TourS
               </div>
               <div className="flex gap-2">
                 {i > 0 ? (
-                  <button type="button" onClick={() => setI(i - 1)} className="rounded-lg px-3 py-1.5 text-sm font-semibold text-ink-2 hover:bg-steel">
+                  <button type="button" onClick={() => setI(i - 1)} className="rounded-lg px-3 py-1.5 text-sm font-semibold text-ink-2 hover:bg-paper-2">
                     Kembali
                   </button>
                 ) : null}
-                <button ref={nextBtn} type="button" onClick={() => (i === steps.length - 1 ? close() : setI(i + 1))} className="rounded-lg bg-daun px-4 py-1.5 text-sm font-semibold text-white hover:bg-daun-2">
+                <button ref={nextBtn} type="button" onClick={() => (i === steps.length - 1 ? close() : setI(i + 1))} className="rounded-lg bg-daun px-4 py-1.5 text-sm font-semibold text-card hover:bg-daun-2">
                   {i === steps.length - 1 ? "Selesai" : "Lanjut"}
                 </button>
               </div>

@@ -4,15 +4,15 @@ import type { Metadata } from "next";
 import { ActionButton } from "@/components/action-button";
 import { BacteriaDial } from "@/components/bacteria-dial";
 import { BatchJourneyChart } from "@/components/charts";
-import { CheckpointTrack } from "@/components/checkpoint-track";
+import { CheckpointTimeline } from "@/components/checkpoint-track";
 import { PersonaGate } from "@/components/persona-gate";
 import { InfoTip } from "@/components/info-tip";
 import { Tour } from "@/components/tour";
 import { ReadingForm } from "@/components/reading-form";
-import { Eyebrow, STATUS_META, fmtInt, fmtIp } from "@/components/ui";
+import { Figure, STATUS_META, StatusPill, fmtInt, fmtIp } from "@/components/ui";
 import { fmtClock, fmtDateLong, fmtDuration, resolveClock } from "@/lib/pilot/clock";
 import { detailOf, evaluateBatch, PHASE_LABEL } from "@/lib/pilot/engine";
-import { batchById, CHECKPOINTS, type Checkpoint } from "@/lib/pilot/sim";
+import { batchById, type Checkpoint } from "@/lib/pilot/sim";
 import { batchEvents } from "@/lib/server/context";
 
 export const dynamic = "force-dynamic";
@@ -42,122 +42,147 @@ export default async function CekPage({ params, searchParams }: { params: Promis
   const recorded = new Set(d.readings.filter((r) => !r.assumed).map((r) => r.checkpoint));
   const schoolCps = ([3, 4] as Checkpoint[]).filter((cp) => !recorded.has(cp));
   const canAct = d.phase === "di_sekolah" || d.phase === "perjalanan" || d.phase === "di_dapur";
+  const expired = d.phase !== "disantap" && d.minutesLeft <= 0;
+  const q = t ? `?t=${encodeURIComponent(t)}` : "";
+
+  const verdict = d.held ? "Ditahan" : d.phase === "disantap" ? `${meta.label} saat disantap` : expired ? "Jangan dibagikan" : meta.verb;
+  const verdictColor = d.held ? "text-ink" : expired ? "text-buang" : meta.fg;
 
   return (
-    <main className="mx-auto max-w-5xl px-4 pb-24 pt-6 sm:px-6">
+    <main className="mx-auto max-w-6xl px-4 pb-28 pt-8 sm:px-6">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <Link href={`/sekolah${t ? `?t=${encodeURIComponent(t)}` : ""}`} className="text-sm font-semibold text-daun">
-          ← Cari sekolah lain
+        <Link href={`/sekolah${q}`} className="whitespace-nowrap text-sm font-semibold text-ink-2 hover:text-ink">
+          ← Sekolah lain
         </Link>
         <PersonaGate role="sekolah" />
       </div>
 
-      <div className="mt-4 grid gap-6 lg:grid-cols-[420px_1fr]">
-        <section className="grid content-start gap-4">
-          <div data-tour="verdict" className="card overflow-hidden">
-            <div className={`${d.held ? "bg-ink text-white" : meta.bg} px-5 pb-5 pt-4`}>
-              <p className={`font-mono text-[11px] font-semibold uppercase tracking-[0.14em] ${d.held ? "text-white/70" : "text-ink-2"}`}>
-                {fmtDateLong(b.serviceDate)} · {b.school.name}
-              </p>
-              {d.held ? (
-                <>
-                  <p className="mt-3 font-display text-4xl font-extrabold leading-none">Ditahan</p>
-                  <p className="mt-2 text-sm text-white/80">
-                    oleh {d.held.by} pukul {fmtClock(d.held.at, b.tzOffset)} {tz}. {d.held.reason}. Jangan dibagikan.
-                  </p>
-                </>
-              ) : (
-                <>
-                  <p className={`mt-3 font-display text-4xl font-extrabold leading-none ${meta.fg}`}>{d.phase === "disantap" ? `${meta.label} saat disantap` : meta.verb}</p>
-                  <p className="mt-2 text-sm text-ink-2">
-                    {d.phase === "disantap"
-                      ? `Disantap pukul ${fmtClock(b.mealAt, b.tzOffset)} dengan Indeks Paparan ${fmtIp(d.ipAtMeal)}.`
-                      : d.minutesLeft <= 0
-                        ? "Batas aman sudah habis. Simpan, jangan dibagikan, dan laporkan ke SPPG."
-                        : `Aman disantap sampai pukul ${fmtClock(deadline, b.tzOffset)} ${tz} (${fmtDuration((deadline - Math.min(now, b.mealAt)) / 60_000)} lagi).`}
-                  </p>
-                </>
-              )}
-            </div>
-            <div className="grid grid-cols-3 divide-x divide-line border-t border-line text-center">
-              <div className="px-2 py-3">
-                <p className="flex items-center justify-center text-[11px] text-muted">IP sekarang<InfoTip title="Indeks Paparan sekarang">Pertumbuhan bakteri yang sudah terkumpul sampai saat ini, dibagi batas aman 3 log. 1,0 berarti batas aman habis.</InfoTip></p>
-                <p className="font-display text-xl font-bold tnum">{fmtIp(d.ipNow)}</p>
-              </div>
-              <div className="px-2 py-3">
-                <p className="flex items-center justify-center text-[11px] text-muted">IP saat makan<InfoTip title="Proyeksi saat makan">Perkiraan Indeks Paparan pada jam makan terjadwal, dengan suhu ruang kelas dari sensor sekolah. Inilah dasar peringatan dini.</InfoTip></p>
-                <p className="font-display text-xl font-bold tnum">{fmtIp(d.ipAtMeal)}</p>
-              </div>
-              <div className="px-2 py-3">
-                <p className="flex items-center justify-center text-[11px] text-muted">Batas 4 jam BGN<InfoTip title="Aturan 4 jam" align="right">Jam matang + 4 jam, sesuai siaran pers BGN SIPERS-281/BGN/08/2026. DETAK memakai mana yang lebih dulu habis: aturan ini atau batas Indeks Paparan.</InfoTip></p>
-                <p className="font-display text-xl font-bold tnum">{fmtClock(d.rule4hAt, b.tzOffset)}</p>
-              </div>
-            </div>
-            {!d.held && d.phase !== "disantap" && safeUntil ? (
-              <p className="border-t border-line px-5 py-3 text-xs leading-relaxed text-muted">
-                {bindingIsModel
-                  ? `Pada suhu ruang ${b.schoolAmbientC.toFixed(1).replace(".", ",")}°C, batas Indeks Paparan habis lebih dulu daripada batas 4 jam. DETAK memakai yang lebih cepat.`
-                  : "Batas 4 jam BGN habis lebih dulu daripada batas Indeks Paparan. DETAK tetap mengikuti aturan 4 jam."}
-              </p>
-            ) : null}
-          </div>
+      <section className="mt-8 grid grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <div data-tour="verdict" className="min-w-0">
+          <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted">
+            <span className="font-semibold text-ink">{b.school.name}</span>
+            <span>· {fmtDateLong(b.serviceDate)}</span>
+          </p>
+          <h1 className={`mt-4 text-[clamp(2.6rem,7vw,5.25rem)] font-extrabold leading-[0.92] tracking-[-0.045em] ${verdictColor}`}>{verdict}</h1>
 
-          <div data-tour="dial" className="card flex justify-center p-5">
-            <BacteriaDial wallHours={wallH} ip={d.phase === "disantap" ? d.ipAtMeal : d.ipNow} status={d.held ? d.statusAtMeal : shown} size={260} />
-          </div>
-        </section>
-
-        <section className="grid content-start gap-4">
-          <div data-tour="journey" className="card p-5">
-            <Eyebrow>Perjalanan batch · {PHASE_LABEL[d.phase]}</Eyebrow>
-            <p className="mt-1 font-display text-2xl font-bold">{b.school.name}</p>
-            <p className="text-sm text-muted">
-              {fmtInt(b.school.portions)} porsi dari {b.kitchen.name}, {d.regency.name} ({b.kitchen.slhs ? "ber-SLHS" : "belum ber-SLHS"}) · Menu: {b.menu}
+          {d.held ? (
+            <p className="mt-5 max-w-xl text-lg text-ink-2">
+              Oleh {d.held.by}, pukul <span className="font-mono tnum">{fmtClock(d.held.at, b.tzOffset)}</span> {tz}. {d.held.reason}.
             </p>
-            <div className="mt-4">
-              <CheckpointTrack s={d} />
+          ) : d.phase === "disantap" ? (
+            <p className="mt-5 text-lg text-ink-2">
+              Disantap pukul <span className="font-mono tnum">{fmtClock(b.mealAt, b.tzOffset)}</span> dengan Indeks Paparan <span className="font-mono tnum">{fmtIp(d.ipAtMeal)}</span>.
+            </p>
+          ) : expired ? (
+            <p className="mt-5 max-w-xl text-lg text-ink-2">Batas aman sudah habis. Simpan terpisah dan laporkan ke SPPG.</p>
+          ) : (
+            <div className="mt-6 flex flex-wrap items-end gap-x-5 gap-y-2">
+              <p className="leading-none">
+                <span className="block text-sm text-muted">aman disantap sampai</span>
+                <span className="mt-1 block font-mono text-[clamp(2.5rem,6vw,4rem)] font-medium tracking-tight tnum">
+                  {fmtClock(deadline, b.tzOffset)}
+                  <span className="ml-2 text-lg text-muted">{tz}</span>
+                </span>
+              </p>
+              <p className="pb-2 font-mono text-sm text-ink-2 tnum">{fmtDuration((deadline - Math.min(now, b.mealAt)) / 60_000)} lagi</p>
             </div>
-            <div className="mt-4">
-              <BatchJourneyChart path={d.path} readings={batchReadings(d)} cookedAt={b.cookedAt} mealAt={b.mealAt} rule4hAt={d.rule4hAt} now={now} tzOffset={b.tzOffset} />
-              <p className="mt-1 text-xs text-muted">Garis abu = suhu makanan. Garis hitam = Indeks Paparan (putus-putus = proyeksi sampai jam makan). Titik bernomor = titik cek; titik putih = nilai asumsi karena tidak tercatat.</p>
-            </div>
+          )}
+
+          <p className="mt-6 flex items-center gap-2 text-sm text-muted">
+            <StatusPill status={d.held ? d.statusAtMeal : shown} size="lg" />
+            <span>{PHASE_LABEL[d.phase].toLowerCase()}</span>
+            <InfoTip title="Arti status">
+              <b className="text-aman">Aman</b>: IP di bawah 0,8, boleh dibagikan. <b className="text-waspada-ink">Waspada</b>: 0,8 sampai di bawah 1,0, bagikan segera. <b className="text-buang">Buang</b>: 1,0 atau lebih, batas pertumbuhan bakteri habis. IP = pertumbuhan <i>Bacillus cereus</i> dari suhu dan waktu, dibagi batas 3 log.
+            </InfoTip>
+          </p>
+        </div>
+
+        <figure data-tour="dial" className="card justify-self-center p-5 lg:justify-self-end">
+          <BacteriaDial wallHours={wallH} ip={d.phase === "disantap" ? d.ipAtMeal : d.ipNow} status={d.held ? d.statusAtMeal : shown} size={280} />
+        </figure>
+      </section>
+
+      <section className="mt-10 grid grid-cols-3 divide-x divide-line border-y border-line py-5">
+        <div className="pr-3 sm:pr-6">
+          <Figure value={fmtIp(d.ipNow)} label="IP sekarang" info={<InfoTip title="IP sekarang">Pertumbuhan bakteri yang sudah terkumpul sampai saat ini, dibagi batas aman 3 log. 1,0 berarti batas habis.</InfoTip>} />
+        </div>
+        <div className="px-3 sm:px-6">
+          <Figure value={fmtIp(d.ipAtMeal)} label="IP saat makan" tone={d.statusAtMeal === "aman" ? undefined : d.statusAtMeal} info={<InfoTip title="Proyeksi saat makan">Perkiraan IP pada jam makan terjadwal, memakai suhu ruang kelas dari sensor sekolah. Ini dasar peringatan dini.</InfoTip>} />
+        </div>
+        <div className="pl-3 sm:pl-6">
+          <Figure value={fmtClock(d.rule4hAt, b.tzOffset)} label="batas 4 jam BGN" info={<InfoTip title="Aturan 4 jam" align="right">Jam matang + 4 jam (SIPERS-281/BGN/08/2026). DETAK memakai mana yang lebih dulu habis: aturan ini atau batas IP.</InfoTip>} />
+        </div>
+      </section>
+      {!d.held && d.phase !== "disantap" && safeUntil ? (
+        <p className="mt-3 text-sm text-muted">
+          {bindingIsModel ? (
+            <>
+              <b className="font-semibold text-ink">Batas IP habis lebih dulu dari aturan 4 jam</b> karena suhu ruang {b.schoolAmbientC.toFixed(1).replace(".", ",")}°C.
+            </>
+          ) : (
+            <>
+              <b className="font-semibold text-ink">Aturan 4 jam habis lebih dulu</b>, jadi DETAK mengikuti aturan BGN.
+            </>
+          )}
+        </p>
+      ) : null}
+
+      <section className="mt-10 grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[360px_minmax(0,1fr)]">
+        <div data-tour="track" className="card self-start p-5">
+          <h2 className="text-lg font-bold">Perjalanan</h2>
+          <p className="mt-1 truncate text-xs text-muted">
+            {b.kitchen.name} · {d.regency.name} · {b.kitchen.slhs ? "ber-SLHS" : "belum ber-SLHS"}
+          </p>
+          <div className="mt-5">
+            <CheckpointTimeline s={d} now={now} />
           </div>
+          <p className="mt-5 border-t border-line pt-3 text-xs text-muted">
+            {fmtInt(b.school.portions)} porsi · {b.menu}
+          </p>
+        </div>
 
-          {canAct && !d.held ? (
-            <div data-tour="act" className="card p-5">
-              <Eyebrow>Untuk guru piket</Eyebrow>
-              {schoolCps.length ? (
-                <div className="mt-3">
-                  <ReadingForm batchId={id} checkpoints={schoolCps} suggestedCp={schoolCps[0]} ambientC={b.schoolAmbientC} t={t} />
-                </div>
-              ) : (
-                <p className="mt-2 text-sm text-muted">Titik Tiba dan Pra-konsumsi sudah tercatat.</p>
-              )}
-              <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-line pt-4">
-                <ActionButton batchId={id} kind="hold" reason="Ditahan guru di sekolah sebelum dibagikan" label="Tahan, jangan dibagikan" tone="danger" t={t} />
-                <span className="text-xs text-muted">Tahan bila makanan berbau, berlendir, atau statusnya Buang. Dinas dan SPPG langsung menerima notifikasi.</span>
+        <figure data-tour="journey" className="card min-w-0 p-5">
+          <figcaption className="flex items-center text-lg font-bold">
+            Suhu dan Indeks Paparan
+            <InfoTip title="Cara membaca" align="right">
+              Garis abu = suhu makanan. Garis hitam = Indeks Paparan (putus-putus = proyeksi sampai jam makan). Titik bernomor = titik cek; titik putih = nilai asumsi karena tidak tercatat.
+            </InfoTip>
+          </figcaption>
+          <div className="mt-4">
+            <BatchJourneyChart path={d.path} readings={batchReadings(d)} cookedAt={b.cookedAt} mealAt={b.mealAt} rule4hAt={d.rule4hAt} now={now} tzOffset={b.tzOffset} />
+          </div>
+        </figure>
+      </section>
+
+      {canAct && !d.held ? (
+        <section data-tour="act" className="mt-6 grid grid-cols-[minmax(0,1fr)] gap-6 rounded-[var(--radius-tray)] bg-paper-2 p-5 sm:p-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+          <div>
+            <h2 className="text-lg font-bold">Guru piket</h2>
+            {schoolCps.length ? (
+              <div className="mt-4">
+                <ReadingForm batchId={id} checkpoints={schoolCps} suggestedCp={schoolCps[0]} ambientC={b.schoolAmbientC} t={t} />
               </div>
-            </div>
-          ) : null}
-
-          <div className="card p-5 text-sm">
-            <Eyebrow>Arti status</Eyebrow>
-            <ul className="mt-3 grid gap-2">
-              <li><b className="text-aman">Aman</b> · IP di bawah 0,8. Boleh dibagikan.</li>
-              <li><b className="text-[#8a6100]">Waspada</b> · IP 0,8 sampai di bawah 1,0. Bagikan segera, jangan disimpan lagi.</li>
-              <li><b className="text-buang">Buang</b> · IP 1,0 atau lebih. Batas aman pertumbuhan bakteri sudah habis. Jangan dibagikan.</li>
-            </ul>
-            <p className="mt-3 text-xs text-muted">Indeks Paparan = pertumbuhan <i>Bacillus cereus</i> yang terkumpul dari suhu dan waktu, dibagi batas 3 log (10² ke 10⁵ CFU/g). {CHECKPOINTS[1].device} dipakai di dapur dan sekolah.</p>
+            ) : (
+              <p className="mt-2 text-sm text-muted">Titik Tiba dan Pra-konsumsi sudah tercatat.</p>
+            )}
+          </div>
+          <div className="flex flex-col justify-end gap-3 lg:border-l lg:border-line-2 lg:pl-6">
+            <p className="text-sm text-ink-2">
+              <b>Berbau, berlendir, atau Buang?</b> <span className="text-muted">Tahan. Dinas dan SPPG langsung menerima tanda Ditahan.</span>
+            </p>
+            <ActionButton batchId={id} kind="hold" reason="Ditahan guru di sekolah sebelum dibagikan" label="Tahan, jangan dibagikan" tone="danger" t={t} />
           </div>
         </section>
-      </div>
+      ) : null}
+
       <Tour
-        id="cek"
+        id="cek-v2"
         steps={[
-          { target: "verdict", title: "Jawaban dalam satu kalimat", body: <>Hijau = boleh dibagikan, kuning = bagikan segera, merah = jangan dibagikan. Di bawahnya tertulis sampai jam berapa makanan aman.</> },
-          { target: "dial", title: "Jam dinding vs jam bakteri", body: <>Jarum hitam menghitung jam sejak matang. Jarum berwarna menghitung pertumbuhan bakteri dalam satuan &quot;jam aturan&quot;. Di ruangan panas, jarum berwarna berlari lebih cepat.</> },
-          { target: "journey", title: "Perjalanan suhunya", body: <>Titik bernomor adalah suhu yang diukur di dapur, saat berangkat, saat tiba, dan sebelum makan. Garis hitam menunjukkan Indeks Paparan naik seiring waktu; putus-putus adalah proyeksi.</> },
-          { target: "act", title: "Guru piket bisa bertindak", body: <>Catat suhu saat makanan tiba dan sebelum dibagikan, atau tahan batch bila statusnya Buang atau makanan terlihat tidak layak. Dinas dan SPPG langsung menerima tanda Ditahan.</> },
+          { target: "verdict", title: "Jawaban satu kalimat", body: <>Hijau boleh dibagikan, kuning segera, merah jangan. Di bawahnya: sampai jam berapa.</> },
+          { target: "dial", title: "Dua jarum", body: <>Hitam = jam sejak matang. Berwarna = pertumbuhan bakteri. Di ruangan panas, jarum berwarna berlari lebih cepat.</> },
+          { target: "track", title: "Empat titik cek", body: <>Suhu diukur di dapur, saat berangkat, tiba, dan sebelum makan. Merah = tidak tercatat.</> },
+          { target: "journey", title: "Kurva perjalanan", body: <>Garis hitam naik seiring waktu. Putus-putus = proyeksi sampai jam makan.</> },
+          ...(canAct && !d.held ? [{ target: "act", title: "Guru bisa bertindak", body: <>Catat suhu, atau tahan batch. Tanda Ditahan langsung sampai ke Dinas dan SPPG.</> }] : []),
         ]}
       />
     </main>

@@ -42,23 +42,23 @@ export function ReadingForm({ batchId, checkpoints, suggestedCp, ambientC, t }: 
       <fieldset className="flex flex-wrap gap-1.5">
         <legend className="sr-only">Titik cek</legend>
         {checkpoints.map((c) => (
-          <button type="button" key={c} onClick={() => setCp(c)} aria-pressed={cp === c} className={`rounded-lg px-3 py-1.5 text-xs font-semibold ${cp === c ? "bg-ink text-white" : "bg-steel-2 text-ink-2"}`}>
+          <button type="button" key={c} onClick={() => setCp(c)} aria-pressed={cp === c} className={`whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-semibold transition-colors duration-150 ${cp === c ? "bg-ink text-card" : "border border-line-2 text-ink-2 hover:border-ink"}`}>
             {c}. {CP_LABEL[c]}
           </button>
         ))}
       </fieldset>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-3">
         <label className="grid gap-1 text-xs font-semibold text-ink-2">
           Suhu makanan (°C)
-          <input inputMode="decimal" required value={food} onChange={(e) => setFood(e.target.value)} placeholder="58,4" className="rounded-xl border border-line bg-white px-3 py-3 font-mono text-2xl tnum" />
+          <input inputMode="decimal" required value={food} onChange={(e) => setFood(e.target.value)} placeholder="58,4" className="w-full min-w-0 rounded-xl border border-line-2 bg-card px-3 py-3 font-mono text-2xl tnum" />
         </label>
         <label className="grid gap-1 text-xs font-semibold text-ink-2">
           Suhu ruang (sensor)
-          <input inputMode="decimal" required value={amb} onChange={(e) => setAmb(e.target.value)} className="rounded-xl border border-line bg-steel px-3 py-3 font-mono text-2xl tnum" />
+          <input inputMode="decimal" required value={amb} onChange={(e) => setAmb(e.target.value)} className="w-full min-w-0 rounded-xl border border-line bg-card/60 px-3 py-3 font-mono text-2xl text-ink-2 tnum" />
         </label>
       </div>
-      <p className="text-xs text-muted">Jam dicatat otomatis oleh server (di lapangan: jam CCTV/sensor), bukan diketik petugas.</p>
-      <button disabled={pending} className="rounded-xl bg-daun py-3 font-semibold text-white disabled:opacity-60">
+      <p className="text-xs text-muted">Jam dicap server, bukan diketik petugas.</p>
+      <button disabled={pending} className="rounded-full bg-daun py-3 font-semibold text-card transition-colors duration-150 hover:bg-daun-2 disabled:opacity-60">
         {pending ? "Menghitung ulang…" : "Simpan suhu"}
       </button>
       {msg ? (

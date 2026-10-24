@@ -5,23 +5,25 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useMemo } from "react";
 import { resolveClock } from "@/lib/pilot/clock";
 
+// Nav: N5 floating pill — detached from the edges, content-sized.
 const NAV = [
-  { href: "/dapur", label: "Dapur", who: "SPPG" },
-  { href: "/sekolah", label: "Sekolah", who: "Guru & orang tua" },
-  { href: "/dinas", label: "Dinas", who: "Control panel" },
-  { href: "/bgn", label: "BGN", who: "Pilot" },
-  { href: "/metode", label: "Metode", who: "Model" },
-  { href: "/implementasi", label: "Implementasi", who: "Arsitektur" },
+  { href: "/dapur", label: "Dapur" },
+  { href: "/sekolah", label: "Sekolah" },
+  { href: "/dinas", label: "Dinas" },
+  { href: "/bgn", label: "BGN" },
+  { href: "/metode", label: "Metode" },
+  { href: "/implementasi", label: "Implementasi" },
 ];
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-steel/90 backdrop-blur supports-[backdrop-filter]:bg-steel/75">
-      <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-2.5 sm:px-6">
-        <Link href="/" className="flex items-center gap-2 rounded-md" aria-label="DETAK, beranda">
-          <Wordmark />
+    <header className="sticky top-0 z-40 px-3 pt-3 sm:px-6">
+      <div className="mx-auto flex max-w-7xl items-center gap-2 rounded-full border border-line bg-card/90 py-1.5 pl-3 pr-1.5 shadow-[0_8px_30px_-18px_oklch(21%_0.02_145/0.45)] backdrop-blur-md">
+        <Link href="/" className="flex shrink-0 items-center gap-2 rounded-full pr-2" aria-label="DETAK, beranda">
+          <Mark />
+          <span className="hidden text-[17px] font-extrabold tracking-tight text-ink sm:inline">DETAK</span>
         </Link>
-        <Suspense fallback={<nav className="hidden flex-1 md:block" />}>
+        <Suspense fallback={<span className="flex-1" />}>
           <Nav />
           <ClockChip />
         </Suspense>
@@ -30,15 +32,12 @@ export function SiteHeader() {
   );
 }
 
-function Wordmark() {
+export function Mark({ size = 26 }: { size?: number }) {
   return (
-    <span className="flex items-center gap-2">
-      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden>
-        <rect x="1" y="1" width="28" height="28" rx="8" fill="#3b5a2c" />
-        <path d="M5 16h5l2.5-6 4 11 2.5-5H25" fill="none" stroke="#fde8d8" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-      <span className="font-display text-[21px] font-extrabold tracking-tight text-daun">DETAK</span>
-    </span>
+    <svg width={size} height={size} viewBox="0 0 30 30" aria-hidden>
+      <rect x="1" y="1" width="28" height="28" rx="9" fill="var(--color-daun)" />
+      <path d="M5 16h5l2.5-6 4 11 2.5-5H25" fill="none" stroke="var(--color-detak-tint)" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   );
 }
 
@@ -48,15 +47,15 @@ function Nav() {
   const t = sp.get("t");
   const q = t ? `?t=${encodeURIComponent(t)}` : "";
   return (
-    <nav aria-label="Portal" className="-mx-1 flex flex-1 items-center gap-0.5 overflow-x-auto px-1 md:justify-center">
+    <nav aria-label="Portal" className="flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto [scrollbar-width:none] max-md:[mask-image:linear-gradient(to_right,black_82%,transparent)]">
       {NAV.map((n) => {
-        const active = path === n.href || path.startsWith(n.href + "/");
+        const active = path === n.href || path.startsWith(n.href + "/") || (n.href === "/sekolah" && path.startsWith("/cek"));
         return (
           <Link
             key={n.href}
             href={n.href + q}
             aria-current={active ? "page" : undefined}
-            className={`shrink-0 rounded-lg px-2.5 py-1.5 text-sm font-semibold transition-colors ${active ? "bg-daun text-white" : "text-ink-2 hover:bg-white/70"}`}
+            className={`shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 text-[13px] font-semibold transition-colors duration-150 ${active ? "bg-ink text-card" : "text-ink-2 hover:bg-paper-2"}`}
           >
             {n.label}
           </Link>
@@ -75,15 +74,17 @@ function ClockChip() {
   const t = sp.get("t");
   const clock = useMemo(() => resolveClock(t), [t]);
   const value = t ?? (clock.mode === "live" ? "live" : "10:15");
+  const hm = clock.label.split("·").pop()?.trim() ?? "";
   return (
-    <label className="hidden shrink-0 items-center gap-2 rounded-lg border border-line bg-white px-2 py-1 text-xs lg:flex">
+    <label className="relative hidden shrink-0 cursor-pointer items-center gap-2 rounded-full bg-paper-2 px-3 py-1.5 text-xs md:flex" title="Ganti jam simulasi">
       <span className="relative flex h-2 w-2">
         <span className={`absolute inline-flex h-full w-full rounded-full ${clock.mode === "live" ? "pulse-dot bg-aman" : "bg-detak"}`} />
       </span>
-      <span className="font-semibold text-ink-2">{clock.mode === "live" ? "Waktu nyata" : "Putar ulang"}</span>
+      <span className="font-mono font-medium text-ink tnum">{hm}</span>
+      <span className="text-muted">{clock.mode === "live" ? "langsung" : "putar ulang"}</span>
       <select
         aria-label="Waktu simulasi"
-        className="cursor-pointer rounded bg-steel px-1 py-0.5 font-mono text-xs"
+        className="absolute inset-0 cursor-pointer opacity-0"
         value={value}
         onChange={(e) => {
           const v = e.target.value;
@@ -93,7 +94,7 @@ function ClockChip() {
           router.push(`${path}${params.size ? `?${params}` : ""}`);
         }}
       >
-        <option value="live">sekarang</option>
+        <option value="live">Waktu nyata</option>
         {TIMES.map((x) => (
           <option key={x} value={x}>
             {x.replace(":", ".")} WIB

@@ -3,7 +3,7 @@ import geo from "@/lib/geo/indonesia.json";
 type Feature = { c: "T" | "S" | "R"; p: string | null; r: number[][][] };
 const FEATURES = (geo as { features: Feature[] }).features;
 
-export const CLUSTER_FILL = { T: "#cc3418", S: "#e9b23a", R: "#8aa05a" } as const;
+export const CLUSTER_FILL = { T: "var(--color-buang)", S: "var(--color-waspada)", R: "var(--color-aman)" } as const;
 
 export interface MapPoint {
   id: string;
@@ -45,11 +45,11 @@ export function GeoMap({
   const pr = (W / (x1 - x0)) * 0.06;
   return (
     <svg viewBox={`0 0 ${W} ${H}`} style={{ maxHeight: height }} className="h-auto w-full" role="img" aria-label={label}>
-      <rect width={W} height={H} fill="#dfe6ea" rx={10} />
+      <rect width={W} height={H} fill="var(--color-paper-2)" rx={10} />
       {FEATURES.filter(inView).map((f, i) => {
         const isHi = highlight ? f.p === highlight : false;
-        const fill = mode === "cluster" ? CLUSTER_FILL[f.c] : isHi ? "#ffffff" : "#eef1ed";
-        return <path key={i} d={d(f)} fill={fill} stroke={mode === "cluster" ? "#ffffff" : "#b9c2b5"} strokeWidth={mode === "cluster" ? 0.6 : 0.8} opacity={mode === "plain" && highlight && !isHi ? 0.7 : 1} />;
+        const fill = mode === "cluster" ? CLUSTER_FILL[f.c] : isHi ? "var(--color-card)" : "var(--color-paper-2)";
+        return <path key={i} d={d(f)} fill={fill} stroke={mode === "cluster" ? "var(--color-card)" : "var(--color-line-2)"} strokeWidth={mode === "cluster" ? 0.6 : 0.8} opacity={mode === "plain" && highlight && !isHi ? 0.7 : 1} />;
       })}
       {points.map((p) => {
         const cx = sx(p.lon);

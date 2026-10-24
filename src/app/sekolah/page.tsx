@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { Eyebrow, PHASE_STYLE, StatusPill, fmtIp } from "@/components/ui";
+import { STATUS_META, SearchBox, SegLink, StatusPill, fmtIp } from "@/components/ui";
 import { Tour } from "@/components/tour";
 import { fmtClock } from "@/lib/pilot/clock";
 import { PHASE_LABEL } from "@/lib/pilot/engine";
@@ -22,62 +22,64 @@ export default async function SekolahIndex({ searchParams }: { searchParams: Pro
   const tOnly = sp.t ? `?t=${encodeURIComponent(sp.t)}` : "";
 
   return (
-    <main className="mx-auto max-w-5xl px-4 pb-24 pt-8 sm:px-6">
-      <Eyebrow>Portal sekolah & orang tua</Eyebrow>
-      <h1 className="mt-2 font-display text-4xl font-extrabold tracking-tight">Cek makanan hari ini di sekolahmu.</h1>
-      <p className="mt-3 max-w-2xl text-ink-2">
-        Cara tercepat: pindai QR pada label boks MBG. Kalau labelnya tidak ada, cari nama sekolah di bawah. Status diperbarui setiap kali dapur atau guru piket mencatat suhu.
+    <main className="mx-auto max-w-4xl px-4 pb-28 pt-10 sm:px-6">
+      <h1 className="text-[clamp(2.2rem,5.5vw,4rem)] font-extrabold leading-[0.95] tracking-[-0.04em]">Cek makanan hari ini.</h1>
+      <p className="lede mt-4 max-w-lg text-lg">
+        <b>Pindai QR di label boks MBG.</b> Tidak ada label? Cari nama sekolahnya.
       </p>
 
-      <div className="mt-6 flex flex-wrap gap-2">
-        {PROVINCES.map((p) => (
-          <Link key={p.id} href={`/sekolah?${tq}prov=${p.id}`} className={`rounded-xl px-4 py-2 text-sm font-semibold ${p.id === prov ? "bg-ink text-white" : "bg-white text-ink-2"}`}>
-            {p.short}
-          </Link>
-        ))}
+      <div data-tour="search" className="mt-8">
+        <SearchBox action="/sekolah" size="lg" hidden={{ t: sp.t, prov, reg }} defaultValue={sp.q} placeholder="Contoh: SDN 2 Depok" label="Nama sekolah" />
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          <nav aria-label="Provinsi" className="flex gap-1 rounded-full bg-paper-2 p-1">
+            {PROVINCES.map((p) => (
+              <SegLink key={p.id} href={`/sekolah?${tq}prov=${p.id}`} active={p.id === prov}>
+                {p.short}
+              </SegLink>
+            ))}
+          </nav>
+        </div>
+        <nav aria-label="Kabupaten/kota" className="-mx-1 mt-2 flex gap-1 overflow-x-auto px-1 pb-1 [scrollbar-width:none]">
+          {province.regencies.map((r) => (
+            <SegLink key={r.id} href={`/sekolah?${tq}prov=${prov}&reg=${r.id}`} active={reg === r.id}>
+              {r.name}
+            </SegLink>
+          ))}
+        </nav>
       </div>
-      <div className="mt-3 flex flex-wrap gap-1.5">
-        {province.regencies.map((r) => (
-          <Link key={r.id} href={`/sekolah?${tq}prov=${prov}&reg=${r.id}`} className={`rounded-lg px-3 py-1.5 text-xs font-semibold ${reg === r.id ? "bg-daun text-white" : "bg-white/70 text-ink-2"}`}>
-            {r.name}
-          </Link>
-        ))}
-      </div>
-      <form data-tour="search" className="mt-4 flex max-w-md gap-2" action="/sekolah">
-        {sp.t ? <input type="hidden" name="t" value={sp.t} /> : null}
-        <input type="hidden" name="prov" value={prov} />
-        <input type="hidden" name="reg" value={reg} />
-        <label htmlFor="q" className="sr-only">Nama sekolah</label>
-        <input id="q" name="q" defaultValue={sp.q} placeholder="Contoh: SDN 2 Depok" className="w-full rounded-xl border border-line bg-white px-3 py-2 text-sm" />
-        <button className="rounded-xl bg-daun px-4 text-sm font-semibold text-white">Cari</button>
-      </form>
 
-      <ul data-tour="list" className="mt-6 grid gap-2">
-        {rows.slice(0, 60).map((s) => (
-          <li key={s.id}>
-            <Link href={`/cek/${s.id}${tOnly}`} className="card flex items-center justify-between gap-3 px-4 py-3 hover:border-daun">
-              <span className="min-w-0">
-                <span className="block truncate font-semibold">{s.batch.school.name}</span>
-                <span className="block truncate text-xs text-muted">
-                  dari {s.batch.kitchen.name} · makan {fmtClock(s.batch.mealAt, s.batch.tzOffset)} {s.province.tzLabel}
+      <ul data-tour="list" className="mt-6 divide-y divide-line border-y border-line">
+        {rows.slice(0, 60).map((s) => {
+          const st = s.phase === "disantap" ? s.statusAtMeal : s.statusNow;
+          return (
+            <li key={s.id}>
+              <Link href={`/cek/${s.id}${tOnly}`} className="group grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-4 py-3.5">
+                <span className="min-w-0">
+                  <span className="block truncate font-semibold group-hover:text-daun">{s.batch.school.name}</span>
+                  <span className="block truncate text-xs text-muted">
+                    makan {fmtClock(s.batch.mealAt, s.batch.tzOffset)} {s.province.tzLabel} · {PHASE_LABEL[s.phase].toLowerCase()}
+                  </span>
                 </span>
-              </span>
-              <span className="flex shrink-0 items-center gap-2">
-                <span className={`hidden rounded-md px-2 py-0.5 text-[11px] font-semibold sm:inline ${PHASE_STYLE[s.phase]}`}>{PHASE_LABEL[s.phase]}</span>
-                <span className="font-mono text-xs text-muted tnum">{fmtIp(s.phase === "disantap" ? s.ipAtMeal : s.ipNow)}</span>
-                <StatusPill status={s.phase === "disantap" ? s.statusAtMeal : s.statusNow} />
-              </span>
-            </Link>
-          </li>
-        ))}
+                <span className="font-mono text-lg tnum" style={{ color: STATUS_META[st].hex }}>
+                  {fmtIp(s.phase === "disantap" ? s.ipAtMeal : s.ipNow)}
+                </span>
+                <span className="w-[84px] text-right">
+                  <StatusPill status={st} />
+                </span>
+              </Link>
+            </li>
+          );
+        })}
+        {rows.length === 0 ? <li className="py-10 text-center text-sm text-muted">Tidak ada sekolah bernama &ldquo;{sp.q}&rdquo; di kab/kota ini.</li> : null}
       </ul>
-      {rows.length > 60 ? <p className="mt-3 text-xs text-muted">Menampilkan 60 dari {rows.length} titik antar. Ketik nama sekolah untuk mempersempit.</p> : null}
-      <p className="mt-8 text-xs text-muted">Nama sekolah dan posyandu di prototipe ini disimulasikan dari nama kecamatan; di lapangan daftar penerima diambil dari SIPGN.</p>
+      <p className="mt-4 text-xs text-muted">
+        {rows.length > 60 ? `60 dari ${rows.length} titik antar ditampilkan. ` : ""}Nama sekolah dan posyandu disimulasikan dari nama kecamatan; di lapangan daftar penerima diambil dari SIPGN.
+      </p>
       <Tour
-        id="sekolah"
+        id="sekolah-v2"
         steps={[
-          { target: "search", title: "Cari sekolahmu", body: <>Pilih provinsi dan kabupaten, lalu ketik nama sekolah. Di lapangan, cara tercepat adalah memindai QR di label boks MBG.</> },
-          { target: "list", title: "Status setiap pengantaran", body: <>Angka di kanan adalah Indeks Paparan. Klik satu baris untuk melihat sampai jam berapa makanannya aman dan bagaimana suhunya berubah.</> },
+          { target: "search", title: "Cari sekolahmu", body: <>Ketik nama, atau pilih kabupaten. Di lapangan cukup pindai QR di boks.</> },
+          { target: "list", title: "Status tiap pengantaran", body: <>Angka = Indeks Paparan sekarang. Klik baris untuk melihat sampai jam berapa aman.</> },
         ]}
       />
     </main>

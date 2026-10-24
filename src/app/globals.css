@@ -1,65 +1,73 @@
+/* DETAK design tokens: paper + olive leaf brand, one dark surface for live boards, status colours used only for status. */
 @import "tailwindcss";
 
-/*
-  DETAK design tokens.
-  Surface = brushed stainless (the ompreng), not paper. Brand olive + orange come from the DETAK poster;
-  status colours are reserved for status and never used as decoration.
-*/
 @theme {
-  --color-ink: #17201a;
-  --color-ink-2: #3c4a3e;
-  --color-muted: #66715f;
-  --color-steel: #e9ece8;
-  --color-steel-2: #dfe3dd;
-  --color-line: #cfd5cc;
-  --color-card: #ffffff;
-  --color-daun: #3b5a2c;
-  --color-daun-2: #2c4520;
-  --color-daun-tint: #e3ebdc;
-  --color-detak: #e5600e;
-  --color-detak-tint: #fde8d8;
-  --color-aman: #2f8a45;
-  --color-aman-tint: #def0e2;
-  --color-waspada: #d99a06;
-  --color-waspada-tint: #fbf0cf;
-  --color-buang: #cc3418;
-  --color-buang-tint: #f9ddd5;
+  /* surfaces */
+  --color-paper: oklch(97.2% 0.006 140);
+  --color-paper-2: oklch(94.4% 0.008 140);
+  --color-card: oklch(99.4% 0.003 140);
+  --color-line: oklch(89% 0.01 140);
+  --color-line-2: oklch(82% 0.012 140);
+  /* ink */
+  --color-ink: oklch(21% 0.02 145);
+  --color-ink-2: oklch(38% 0.02 145);
+  --color-muted: oklch(52% 0.018 140);
+  /* night board (the one dark surface: live boards) */
+  --color-night: oklch(19% 0.018 150);
+  --color-night-2: oklch(25% 0.02 150);
+  --color-night-line: oklch(33% 0.02 150);
+  --color-night-ink: oklch(94% 0.01 140);
+  --color-night-muted: oklch(68% 0.02 140);
+  --color-scrim: oklch(14% 0.015 150 / 0.74);
+  /* brand */
+  --color-daun: oklch(42% 0.07 135);
+  --color-daun-2: oklch(34% 0.06 135);
+  --color-daun-tint: oklch(92.5% 0.03 135);
+  --color-detak: oklch(66% 0.18 45);
+  --color-detak-tint: oklch(93% 0.04 50);
+  --color-route: oklch(52% 0.08 240);
+  /* status (status only) */
+  --color-aman: oklch(58% 0.13 150);
+  --color-aman-tint: oklch(93% 0.045 150);
+  --color-waspada: oklch(78% 0.15 80);
+  --color-waspada-ink: oklch(48% 0.1 75);
+  --color-waspada-tint: oklch(95% 0.05 90);
+  --color-buang: oklch(56% 0.19 30);
+  --color-buang-tint: oklch(93% 0.04 30);
 
-  --font-display: var(--font-bricolage), "Segoe UI", sans-serif;
-  --font-sans: var(--font-jakarta), "Segoe UI", sans-serif;
-  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+  --: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
-  --radius-tray: 14px;
+  --radius-tray: 12px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 :root {
   color-scheme: light;
 }
 
-html {
-  -webkit-text-size-adjust: 100%;
+html,
+body {
+  overflow-x: clip;
 }
 
 body {
-  background: var(--color-steel);
+  background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-sans);
-  font-feature-settings: "ss01", "cv11";
+  font-feature-settings: "ss01";
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Brushed-steel texture: two very low-contrast linear gradients, no images. */
-.steel {
-  background-color: var(--color-steel);
-  background-image:
-    repeating-linear-gradient(90deg, rgb(255 255 255 / 0.35) 0 1px, transparent 1px 3px),
-    linear-gradient(180deg, #eef1ed 0%, #e6e9e4 100%);
-}
-
-/* A tray compartment: inset well like the pressed sections of an ompreng. */
-.well {
-  background: var(--color-steel-2);
-  border-radius: var(--radius-tray);
-  box-shadow: inset 0 1px 2px rgb(23 32 26 / 0.12), inset 0 -1px 0 rgb(255 255 255 / 0.7);
+h1,
+h2,
+h3 {
+  font-family: var(--);
+  letter-spacing: -0.025em;
+  font-style: normal;
+  overflow-wrap: anywhere;
+  min-width: 0;
 }
 
 .card {
@@ -68,9 +76,15 @@ body {
   border-radius: var(--radius-tray);
 }
 
-/* Thermal batch label (printed by the SPPG and taped on the delivery box). */
+/* The live board: deep green-black, the only dark surface in the app. */
+.board {
+  background: var(--color-night);
+  color: var(--color-night-ink);
+  border-radius: var(--radius-tray);
+}
+
 .label-thermal {
-  background: #fdfdfb;
+  background: oklch(99% 0.002 90);
   border-radius: 6px;
   font-family: var(--font-mono);
   -webkit-mask: radial-gradient(circle 5px at 50% 0, transparent 98%, #000) 0 0 / 14px 51% repeat-x,
@@ -83,26 +97,42 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+/* Lead + muted continuation: one bright sentence, the rest recedes. */
+.lede b {
+  color: var(--color-ink);
+  font-weight: 600;
+}
+.lede {
+  color: var(--color-muted);
+}
+
 :focus-visible {
-  outline: 3px solid var(--color-detak);
+  outline: 2px solid var(--color-detak);
   outline-offset: 2px;
   border-radius: 6px;
 }
 
 @keyframes pulse-dot {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.6); opacity: 0.35; }
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.8);
+    opacity: 0.3;
+  }
 }
 .pulse-dot {
-  animation: pulse-dot 1.6s ease-in-out infinite;
-}
-
-@keyframes needle-in {
-  from { transform: rotate(var(--from, 0deg)); }
-  to { transform: rotate(var(--to, 0deg)); }
+  animation: pulse-dot 1.6s var(--ease-out) infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pulse-dot { animation: none; }
-  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  .pulse-dot {
+    animation: none;
+  }
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
 }
