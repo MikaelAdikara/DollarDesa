@@ -1,0 +1,9 @@
+﻿kriteria;bobot;catatan
+Riwayat insiden (EB);0,4658;laju kejadian per 100 SPPG setelah penyusutan
+Laju suspend;0,2771;persen SPPG disuspend per wilayah BGN
+Skala beban;0,1611;jumlah SPPG provinsi
+Keterpencilan;0,0960;indeks 0-1 berbasis pulau
+lambda_maks;4,0310;nilai eigen utama
+CI;0,0103;indeks konsistensi
+RI;0,90;indeks acak untuk n=4
+CR;0,0115;konsisten karena < 0,10

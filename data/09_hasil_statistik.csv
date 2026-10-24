@@ -1,0 +1,17 @@
+﻿analisis;statistik;nilai;p_value;kesimpulan
+Autokorelasi spasial;Moran's I;-0,089;0,50;tidak ada klaster spasial
+Autokorelasi spasial;E[I];-0,027;;nilai harapan
+Autokorelasi spasial;skor z;-0,68;;tidak signifikan
+Regresi Binomial Negatif;IRR Jawa;2,32;0,32;belum terbukti berbeda
+Regresi Binomial Negatif;CI 95% IRR;0,45 - 12,00;;melewati angka 1
+Regresi Binomial Negatif;alpha dispersi;1,247;;
+Uji overdispersi;LR vs Poisson;4,22;0,020;Binomial Negatif tepat
+Klaster K-Means;silhouette;0,457;;struktur cukup jelas
+Korelasi struktural;Spearman rho;0,265;0,130;profil wilayah tidak meramalkan insiden
+Korelasi struktural;Pearson r;0,130;0,462;idem
+p-chart n=20 p0=2%;UCL;0,114;;sinyal bila >= 3 dari 20
+p-chart n=20 p0=2%;ARL0;141 hari;;alarm palsu
+p-chart n=20 p0=2%;ARL1 (p=10%);3,1 hari;;deteksi penyimpangan
+Aktuaria;insidensi;4,52 per juta porsi;;
+Aktuaria;premi DETAK;Rp1,8 per porsi;;
+Aktuaria;kerugian harapan;Rp2,26 - Rp9,04 per porsi;;premi lebih murah

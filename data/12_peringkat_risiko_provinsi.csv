@@ -1,0 +1,39 @@
+﻿peringkat;provinsi;skor_ahp_saw;klaster;sppg;insiden_per100;suspend_persen
+1;DI Yogyakarta;0,754;Tinggi;461;0,184;9,2
+2;Papua;0,590;Sedang;92;0,106;7,4
+3;Jawa Tengah;0,583;Tinggi;4590;0,078;9,2
+4;Kalimantan Tengah;0,536;Sedang;136;0,104;7,4
+5;Jawa Timur;0,500;Tinggi;4340;0,047;9,2
+6;DKI Jakarta;0,494;Tinggi;667;0,079;9,2
+7;Sulawesi Selatan;0,465;Sedang;892;0,072;7,4
+8;Jawa Barat;0,463;Tinggi;6721;0,010;9,2
+9;Papua Pegunungan;0,445;Sedang;14;0,050;7,4
+10;Papua Selatan;0,444;Sedang;20;0,049;7,4
+11;Papua Tengah;0,443;Sedang;36;0,049;7,4
+12;Papua Barat Daya;0,443;Sedang;48;0,049;7,4
+13;Papua Barat;0,442;Sedang;65;0,048;7,4
+14;Maluku;0,430;Sedang;124;0,046;7,4
+15;Maluku Utara;0,430;Sedang;125;0,046;7,4
+16;Bali;0,395;Sedang;277;0,043;7,4
+17;Kalimantan Utara;0,394;Sedang;67;0,048;7,4
+18;Nusa Tenggara Timur;0,393;Sedang;339;0,041;7,4
+19;Kalimantan Selatan;0,384;Sedang;312;0,042;7,4
+20;Kalimantan Timur;0,384;Sedang;326;0,042;7,4
+21;Nusa Tenggara Barat;0,383;Sedang;871;0,032;7,4
+22;Gorontalo;0,382;Sedang;117;0,047;7,4
+23;Sulawesi Utara;0,378;Sedang;203;0,044;7,4
+24;Banten;0,378;Tinggi;1403;0,027;9,2
+25;Kalimantan Barat;0,378;Sedang;566;0,037;7,4
+26;Sulawesi Barat;0,378;Sedang;225;0,044;7,4
+27;Sulawesi Tengah;0,377;Sedang;239;0,044;7,4
+28;Sulawesi Tenggara;0,374;Sedang;328;0,042;7,4
+29;Sumatera Barat;0,322;Rendah;446;0,088;2,3
+30;Sumatera Utara;0,269;Rendah;1592;0,056;2,3
+31;Kep. Bangka Belitung;0,210;Rendah;106;0,047;2,3
+32;Bengkulu;0,207;Rendah;175;0,045;2,3
+33;Jambi;0,204;Rendah;234;0,044;2,3
+34;Kepulauan Riau;0,203;Rendah;263;0,043;2,3
+35;Aceh;0,193;Rendah;737;0,034;2,3
+36;Riau;0,192;Rendah;775;0,034;2,3
+37;Sumatera Selatan;0,192;Rendah;850;0,033;2,3
+38;Lampung;0,190;Rendah;1209;0,029;2,3

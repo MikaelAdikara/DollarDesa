@@ -1,0 +1,46 @@
+﻿kategori;isi;penerbit;tanggal_data;dipakai_untuk;tautan_atau_rujukan
+Korban;50.059 korban, 560 kejadian, 245 kab/kota, 36 provinsi;Kemenkes via rapat DPR Komisi IX;2 Sep 2026;pita judul, blok 1;viva.co.id 4/9/2026
+Korban;43.838 korban (28.103 tahun 2025 + 15.735 tahun 2026);JPPI;awal Sep 2026;pembanding rentang;kalderanews.com 4/9/2026
+Program;55,1 juta penerima manfaat per hari;Kemenkes;Jan 2026;blok 1;kemkes.go.id
+Program;target 82,9 juta penerima;BGN;2026;blok 1;bgn.go.id
+Program;"Rp1,2 triliun per hari; APBN Rp335 triliun";BGN, Kemenkeu;2026;blok 1, blok 8;money.kompas.com, tempo.co
+Dapur;29.991 SPPG di 38 provinsi, rincian per provinsi;BGN;8 Jun 2026;C1, C7, C16, seluruh regresi;idntimes.com, goodstats.id
+Dapur;2.213 SPPG disuspend (Wilayah I 148, II 1.666, III 399);BGN via Databoks;29 Mei 2026;C9, C16, skor AHP;databoks.katadata.co.id
+Dapur;kapasitas 2.500-3.000 porsi per hari;Kepka BGN 244/2025;2025;konteks;tirto.id
+Sertifikasi;13.576 dari 25.925 SPPG ber-SLHS (52,37%);Kemenkes;15 Apr 2026;C13, blok 2;cnbcindonesia.com 16/4/2026
+Sertifikasi;57% SPPG memenuhi standar;Komnas HAM;15 Jun 2026;C13;kompas.com
+Sertifikasi;455 dapur ditutup permanen (dikoreksi dari 504);BGN;26 Agu 2026;C13, blok 2;kompas.com 26/8/2026
+Aturan;Rules of 4 Hours, SIPERS-281/BGN/08/2026;BGN;10 Agu 2026;blok 3, blok 4;bgn.go.id
+Aturan;label batas konsumsi di ompreng;BGN;10 Agu 2026, berlaku ~17 Agu;S4, blok 6;cnnindonesia.com
+Aturan;masak mulai 02.00, distribusi <=30 menit / <=6 km;SK Kepala BGN 401.1/2025;2025;S2, blok 3;pangannews.id
+Aturan;CCTV wajib di seluruh SPPG, terhubung pusat;BGN;Agu 2026;blok 6, S8;republika, cnbcindonesia 7/8/2026
+Aturan;SIPGN tujuh modul, terintegrasi AKSIS, akses NIK;BGN;2026;blok 6, prototipe;bgn.go.id
+Aturan;Satgas Keamanan Pangan lintas kementerian;PP No. 1 Tahun 2026;2026;blok 6B;peraturan.bpk.go.id
+Iklim;suhu rata-rata Indonesia 27,05 C (115 stasiun);BMKG;2025;C17, model;bmkg.go.id
+Iklim;Juli 2026 27,0 C, anomali +0,8 C;BMKG;Jul 2026;konteks;bmkg.go.id
+Iklim;laju pemanasan 1,02 C per 44 tahun;BMKG;1981-2024;konteks;bmkg.go.id
+KLB nasional;sumber KLB: rumah tangga 53%, jasa boga 40%, kemasan 7%;BPOM;-;C12, blok 8;pom.go.id
+Biaya;tarif uji cemaran mikroba ~Rp550.000 per parameter;BBPOM;2026;C15, blok 8;bbpomsurabaya.pom.go.id
+Jurnal;parameter Ratkowsky B. cereus;Dong dkk. (2025), Int J Food Sci 2025:1180461;2025;seluruh model;doi 10.1155/ijfo/1180461
+Jurnal;nasi 24 C tembus 5 log CFU/g < 10 jam;Bursova dkk. (2024), JMBFS 14(1):e10985;2024;pembenaran ambang;doi 10.55251/jmbfs.10985
+Jurnal;model B. cereus saat pendinginan nasi;Juneja dkk. (2019), Int J Food Microbiol 290:49-58;2019;rujukan model;doi 10.1016/j.ijfoodmicro.2018.09.023
+Jurnal;1.176 KLB Indonesia 2000-2015, faktor utama suhu simpan;Arisanti dkk. (2018), BKM 34(3):99-106;2018;blok 6B;doi 10.22146/bkm.33852
+Jurnal;model akar kuadrat laju tumbuh vs suhu;Ratkowsky dkk. (1982), J Bacteriol 149:1-5;1982;dasar model;-
+Jurnal;uji gabungan;Dorfman (1943), Ann Math Stat 14:436-440;1943;C15;-
+Jurnal;SPC di industri pangan;Lim, Antony & Albliwi (2014), Trends Food Sci Technol 37(2);2014;S7;-
+Jurnal;3 algoritma deteksi KLB, sensitivitas 100%;Alsentzer dkk. (2020), Emerg Infect Dis 26(9);2020;alarm absensi;doi 10.3201/eid2609.191315
+Jurnal;paket R DESA surveilans absensi sekolah;Joshy dkk., arXiv 2508.20943;2025-2026;alarm absensi;arxiv.org/abs/2508.20943
+Jurnal;peramalan inspeksi pangan Chicago, 7,5 hari lebih cepat;Chicago Dept. of Public Health;2015;blok 7;chicago.github.io
+Jurnal;kritik independen model Chicago;Kannan, Shapiro & Bilgic (2019), arXiv 1910.04906;2019;batas klaim AI;arxiv.org/abs/1910.04906
+Jurnal;TTI minyak nabati buatan IPB;Khairunnisa dkk. (2018), J Teknol Ind Pangan 29(2);2018;biaya stiker;doi 10.6066/jtip.2018.29.2.195
+Jurnal;visi kolorimetrik ponsel, akurasi 99,6%;Talanta (2023);2023;batas klaim AI;-
+Peta;batas provinsi Indonesia (34 wilayah);superpikar/indonesia-geojson;-;C1, C7, C16;github.com/superpikar/indonesia-geojson
+Program;Penerima MBG 61,2 juta per 27 Feb 2026;Tribratanews Polri;27 Feb 2026;blok 1;tribratanews.polri.go.id/blog/nasional-3/pemerintah-penerima-mbg-capai-612-juta-hingga-februari-2026-99481
+Program;Target 72,46 juta penerima pada 2027;BGN via detikHealth;2026;blok 1;health.detik.com/berita-detikhealth/d-8651293
+Aturan;80% keracunan MBG akibat pelanggaran SOP;Kepala BGN via detikNews;2026;blok 3;news.detik.com/berita/d-8647523
+Kasus;Sidoarjo: makanan disantap 7 jam setelah dimasak;Kompas Surabaya;4 Sep 2026;blok 4, uji balik;surabaya.kompas.com/read/2026/09/04/164636178
+Kasus;Semarang: jarak waktu memasak hampir 12 jam;Jatengnews;4 Agu 2026;blok 4, uji balik;jatengnews.id/2026/08/04
+Kasus;Jakarta Timur: 252 siswa keracunan, pangsit tahu;detikNews;2026;blok 4, uji balik;news.detik.com/berita/d-8482290
+Kasus;Jayapura: penyebab keracunan menurut Kepala BGN;Kompas Nasional;5 Agu 2026;blok 4, uji balik;nasional.kompas.com/read/2026/08/05/21301381
+Dapur;Cara cek jumlah SPPG per kecamatan;Tribunnews;Jun 2026;blok 1;tribunnews.com/nasional/7839793
+Dapur;504 dapur ditutup permanen (pengumuman 13 Agu);Kompas TV;13 Agu 2026;blok 2;kompas.tv/nasional/685422

@@ -1,0 +1,15 @@
+﻿parameter;nilai;satuan;sumber
+a (Ratkowsky penuh);0,022;-;Dong dkk. (2025), B. cereus vegetatif, adonan beras ketan
+b (Ratkowsky penuh);0,424;-;idem
+Tmin;-2,568;derajat C;idem
+Tmax;47,108;derajat C;idem
+lag 25 C;6,635;jam;idem
+lag 32 C;1,997;jam;idem
+lag 37 C;0,651;jam;idem
+Suhu awal makanan;65;derajat C;asumsi keluar dapur
+k pendinginan ompreng biasa;0,35 - 1,00;per jam;ASUMSI, belum diukur lapangan
+k pendinginan ompreng insulasi;0,15 - 0,30;per jam;ASUMSI
+h0 (keadaan fisiologis awal);0,5 - 1,7;-;ASUMSI, rentang Baranyi
+Ambang cemaran;10^5;CFU/g;konsensus mikrobiologi pangan
+Beban awal baku;10^2;CFU/g;asumsi dapur ber-SLHS
+Jumlah jalan Monte Carlo;400 - 4.000;-;tergantung grafik

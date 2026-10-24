@@ -1,0 +1,18 @@
+﻿sumber;dipakai_untuk;tingkat_kredibilitas;alasan;keterbatasan_yang_diakui;berkas_terkait
+Kemenkes RI;Korban, kejadian, sebaran kab/kota;Sangat tinggi;Lembaga negara. Angka dibacakan dalam rapat kerja DPR Komisi IX 3 Sep 2026;"Rekapitulasi laporan Dinkes daerah; definisi 'dugaan keracunan' lebih luas daripada KLB terkonfirmasi laboratorium";01,02,13
+Badan Gizi Nasional (BGN);Jumlah SPPG, sebaran provinsi, suspend, aturan waktu, CCTV, SIPGN;Sangat tinggi;Lembaga pelaksana program. Data primer operasional;Angka penutupan dapur pernah dikoreksi sendiri dari 504 menjadi 455 pada 26 Agu 2026. Pakai 455;01,11,12
+BPOM;Sumber KLB keracunan pangan nasional, tarif uji laboratorium;Sangat tinggi;Otoritas pengawas obat dan makanan;Pembagian 53/40/7 adalah agregat nasional lintas tahun, bukan khusus 2026;07,11
+BMKG;Suhu rata-rata Indonesia, anomali, laju pemanasan;Sangat tinggi;Lembaga meteorologi resmi. 115 stasiun pengamatan;Hanya tersedia agregat nasional. Tabel per provinsi TIDAK dipublikasikan, karena itu suhu per provinsi tidak dipakai;10,11
+Komnas HAM;Persentase SPPG memenuhi standar;Tinggi;Lembaga negara independen;Metode penilaian standar tidak dirinci publik;11
+Ombudsman RI;Rekomendasi tata kelola, insiden Sumut;Tinggi;Lembaga negara pengawas pelayanan publik;Bersifat rekomendasi, bukan data terukur;11
+JPPI;Deret korban 2025 dan 2026 per bulan;Sedang-tinggi;Pemantau independen, dikutip luas media nasional;"Berbasis pemantauan lapangan dan media, bukan registri epidemiologis. Angkanya berbeda dari Kemenkes; keduanya ditampilkan sebagai rentang";02,13
+Kompas, CNN Indonesia, detik, Tribun, Republika;Rincian kejadian: tanggal, lokasi, korban, jeda waktu, patogen;Sedang;Media arus utama dengan standar verifikasi;Liputan condong ke Jawa. Kompilasi ini SUBSET, bukan sensus. n = 15 kejadian;02,03
+Dong dkk. (2025), Int J Food Sci 2025:1180461;Parameter Ratkowsky B. cereus;Sangat tinggi;Jurnal terindeks, peer-reviewed;Matriks adonan beras ketan, bukan nasi MBG Indonesia;04,05,10
+Bursova dkk. (2024), JMBFS 14(1):e10985;Nasi 24 C tembus 5 log CFU/g < 10 jam;Sangat tinggi;Jurnal terindeks;Kondisi laboratorium terkendali;10
+Juneja dkk. (2019), Int J Food Microbiol 290:49-58;Model B. cereus saat pendinginan nasi;Sangat tinggi;Jurnal terindeks;Dipakai sebagai rujukan pembanding, bukan sumber parameter;10
+Arisanti dkk. (2018), Berita Kedokteran Masyarakat 34(3);1.176 KLB Indonesia 2000-2015, faktor penyebab utama;Sangat tinggi;Jurnal terindeks UGM, kajian sistematis;Periode 2000-2015, sebelum program MBG ada;11
+Ratkowsky dkk. (1982), J Bacteriol 149:1-5;Model akar kuadrat laju tumbuh vs suhu;Sangat tinggi;Jurnal klasik, sangat banyak dikutip;-;10
+Dorfman (1943), Ann Math Stat 14:436-440;Rumus uji gabungan;Sangat tinggi;Jurnal klasik;Asumsi uji sempurna tanpa efek pengenceran;07
+Alsentzer dkk. (2020), Emerg Infect Dis 26(9);Sensitivitas 100%, spesifisitas 97-99%, PPV 27-46%;Sangat tinggi;Terbitan CDC;Latar klinik angkatan laut Peru, bukan sekolah Indonesia;09,11
+Kannan, Shapiro & Bilgic (2019), arXiv 1910.04906;Kritik independen model inspeksi Chicago;Tinggi;Pracetak akademik;Belum melalui peer review formal. Dipakai untuk MEMBATASI klaim kami sendiri;11
+superpikar/indonesia-geojson;Batas wilayah provinsi;Sedang;Repositori terbuka;Memuat 34 provinsi (sebelum pemekaran Papua). Enam provinsi Papua digabung jadi dua untuk keperluan peta;peta

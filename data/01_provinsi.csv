@@ -1,0 +1,39 @@
+﻿provinsi;pulau;wilayah_bgn;sppg_juni2026;kejadian_terdokumentasi;laju_mentah_per100sppg;laju_empirical_bayes_per100sppg;suspend_wilayah_persen;indeks_keterpencilan;skor_prioritas_ahp_saw;klaster_kmeans
+Aceh;Sumatera;I;737;0;0,0000;0,0343;2,3;0,20;0,193;Rendah
+Sumatera Utara;Sumatera;I;1592;1;0,0628;0,0564;2,3;0,20;0,269;Rendah
+Sumatera Barat;Sumatera;I;446;1;0,2242;0,0879;2,3;0,20;0,322;Rendah
+Riau;Sumatera;I;775;0;0,0000;0,0337;2,3;0,20;0,192;Rendah
+Kepulauan Riau;Sumatera;I;263;0;0,0000;0,0430;2,3;0,20;0,203;Rendah
+Jambi;Sumatera;I;234;0;0,0000;0,0436;2,3;0,20;0,204;Rendah
+Sumatera Selatan;Sumatera;I;850;0;0,0000;0,0327;2,3;0,20;0,192;Rendah
+Kepulauan Bangka Belitung;Sumatera;I;106;0;0,0000;0,0469;2,3;0,20;;Rendah
+Bengkulu;Sumatera;I;175;0;0,0000;0,0451;2,3;0,20;0,207;Rendah
+Lampung;Sumatera;I;1209;0;0,0000;0,0285;2,3;0,20;0,19;Rendah
+Banten;Jawa;II;1403;0;0,0000;0,0267;9,2;0,00;0,378;Tinggi
+DKI Jakarta;Jawa;II;667;1;0,1499;0,0794;9,2;0,00;0,494;Tinggi
+Jawa Barat;Jawa;II;6721;0;0,0000;0,0096;9,2;0,00;0,463;Tinggi
+Jawa Tengah;Jawa;II;4590;4;0,0871;0,0775;9,2;0,00;0,583;Tinggi
+DI Yogyakarta;Jawa;II;461;3;0,6508;0,1842;9,2;0,00;0,754;Tinggi
+Jawa Timur;Jawa;II;4340;2;0,0461;0,0471;9,2;0,00;0,5;Tinggi
+Bali;Bali-Nusra;III;277;0;0,0000;0,0426;7,4;0,60;0,395;Sedang
+Nusa Tenggara Barat;Bali-Nusra;III;871;0;0,0000;0,0324;7,4;0,60;0,383;Sedang
+Nusa Tenggara Timur;Bali-Nusra;III;339;0;0,0000;0,0413;7,4;0,60;0,393;Sedang
+Kalimantan Barat;Kalimantan;III;566;0;0,0000;0,0370;7,4;0,50;0,378;Sedang
+Kalimantan Tengah;Kalimantan;III;136;1;0,7353;0,1036;7,4;0,50;0,536;Sedang
+Kalimantan Selatan;Kalimantan;III;312;0;0,0000;0,0419;7,4;0,50;0,384;Sedang
+Kalimantan Timur;Kalimantan;III;326;0;0,0000;0,0416;7,4;0,50;0,384;Sedang
+Kalimantan Utara;Kalimantan;III;67;0;0,0000;0,0480;7,4;0,50;0,394;Sedang
+Sulawesi Utara;Sulawesi;III;203;0;0,0000;0,0444;7,4;0,40;0,378;Sedang
+Gorontalo;Sulawesi;III;117;0;0,0000;0,0466;7,4;0,40;0,382;Sedang
+Sulawesi Tengah;Sulawesi;III;239;0;0,0000;0,0435;7,4;0,40;0,377;Sedang
+Sulawesi Barat;Sulawesi;III;225;0;0,0000;0,0439;7,4;0,40;0,378;Sedang
+Sulawesi Selatan;Sulawesi;III;892;1;0,1121;0,0722;7,4;0,40;0,465;Tinggi
+Sulawesi Tenggara;Sulawesi;III;328;0;0,0000;0,0415;7,4;0,40;0,374;Sedang
+Maluku;Maluku;III;124;0;0,0000;0,0464;7,4;0,90;0,43;Sedang
+Maluku Utara;Maluku;III;125;0;0,0000;0,0464;7,4;0,90;0,43;Sedang
+Papua;Papua;III;92;1;1,0870;0,1063;7,4;1,00;0,59;Sedang
+Papua Barat;Papua;III;65;0;0,0000;0,0481;7,4;1,00;0,442;Sedang
+Papua Barat Daya;Papua;III;48;0;0,0000;0,0486;7,4;1,00;0,443;Sedang
+Papua Tengah;Papua;III;36;0;0,0000;0,0489;7,4;1,00;0,443;Sedang
+Papua Selatan;Papua;III;20;0;0,0000;0,0494;7,4;1,00;0,444;Sedang
+Papua Pegunungan;Papua;III;14;0;0,0000;0,0496;7,4;1,00;0,445;Sedang
