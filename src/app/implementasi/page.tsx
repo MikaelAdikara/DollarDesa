@@ -10,7 +10,7 @@ function Architecture() {
   const box = (x: number, y: number, w: number, h: number, title: string, lines: string[], fill = "var(--color-card)", stroke = "var(--color-line)", titleColor = "var(--color-ink)") => (
     <g>
       <rect x={x} y={y} width={w} height={h} rx={12} fill={fill} stroke={stroke} strokeWidth={1.5} />
-      <text x={x + 14} y={y + 24} fontSize="14" fontWeight={700} fill={titleColor} fontFamily="var(--font-schibsted)">
+      <text x={x + 14} y={y + 24} fontSize="14" fontWeight={700} fill={titleColor} fontFamily="var(--font-funnel-display)">
         {title}
       </text>
       {lines.map((l, i) => (
@@ -95,7 +95,7 @@ export default function ImplementasiPage() {
   const readsPerDay = schools * 4;
   const natReads = Math.round((readsPerDay / PILOT_TOTAL_SPPG) * NATIONAL.sppg);
   return (
-    <main className="mx-auto max-w-7xl px-4 pb-28 pt-10 sm:px-6">
+    <main className="mx-auto max-w-7xl px-4 pb-16 pt-10 sm:px-6">
       <h1 className="max-w-4xl text-[clamp(2.2rem,5vw,4rem)] font-extrabold leading-[0.95] tracking-[-0.04em]">Yang sudah berjalan, dan cara memasangnya.</h1>
       <p className="lede mt-4 max-w-xl text-lg">
         <b>Modul ke-8 SIPGN: satu API, empat layar, satu mesin hitung.</b> Semua yang tampil di prototipe ini memanggil API yang sama.

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useMemo } from "react";
 import { resolveClock } from "@/lib/pilot/clock";
+import { Wordmark } from "./wordmark";
 
 // Nav: N5 floating pill — detached from the edges, content-sized.
 const NAV = [
@@ -18,10 +19,9 @@ const NAV = [
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 px-3 pt-3 sm:px-6">
-      <div className="mx-auto flex max-w-7xl items-center gap-2 rounded-full border border-line bg-card/90 py-1.5 pl-3 pr-1.5 shadow-[0_8px_30px_-18px_oklch(21%_0.02_145/0.45)] backdrop-blur-md">
-        <Link href="/" className="flex shrink-0 items-center gap-2 rounded-full pr-2" aria-label="DETAK, beranda">
-          <Mark />
-          <span className="hidden text-[17px] font-extrabold tracking-tight text-ink sm:inline">DETAK</span>
+      <div className="mx-auto flex max-w-7xl items-center gap-2 rounded-full border border-line bg-card/85 p-1.5 shadow-[0_10px_30px_-18px_oklch(18%_0.012_50/0.4)] backdrop-blur-md backdrop-saturate-150">
+        <Link href="/" className="flex shrink-0 items-center rounded-full px-2 py-1 transition-transform duration-200 ease-[var(--ease-out)] hover:-translate-y-px" aria-label="DETAK, beranda">
+          <Wordmark height={26} />
         </Link>
         <Suspense fallback={<span className="flex-1" />}>
           <Nav />
@@ -29,15 +29,6 @@ export function SiteHeader() {
         </Suspense>
       </div>
     </header>
-  );
-}
-
-export function Mark({ size = 26 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 30 30" aria-hidden>
-      <rect x="1" y="1" width="28" height="28" rx="9" fill="var(--color-daun)" />
-      <path d="M5 16h5l2.5-6 4 11 2.5-5H25" fill="none" stroke="var(--color-detak-tint)" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
   );
 }
 

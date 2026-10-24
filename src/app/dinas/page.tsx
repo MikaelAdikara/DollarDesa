@@ -41,7 +41,7 @@ export default async function DinasPage({ searchParams }: { searchParams: Promis
   const hm = clock.label.split("·").pop()?.trim();
 
   return (
-    <main className="mx-auto max-w-[1400px] px-4 pb-28 pt-8 sm:px-6">
+    <main className="mx-auto max-w-[1400px] px-4 pb-16 pt-8 sm:px-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <nav aria-label="Provinsi" className="flex gap-1 rounded-full bg-paper-2 p-1">
           {PROVINCES.map((p) => (

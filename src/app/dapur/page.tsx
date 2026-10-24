@@ -27,7 +27,7 @@ export default async function DapurIndex({ searchParams }: { searchParams: Promi
   const tOnly = sp.t ? `?t=${encodeURIComponent(sp.t)}` : "";
 
   return (
-    <main className="mx-auto max-w-7xl px-4 pb-28 pt-10 sm:px-6">
+    <main className="mx-auto max-w-7xl px-4 pb-16 pt-10 sm:px-6">
       <h1 className="text-[clamp(2.2rem,5vw,3.75rem)] font-extrabold leading-none tracking-[-0.04em]">Pilih dapur.</h1>
       <p className="lede mt-4 max-w-xl">
         <b>Di lapangan, akun SIPGN langsung membuka dapurmu sendiri.</b> Di prototipe ini semua {fmtInt(province.sppg)} SPPG {province.short} bisa dibuka.

@@ -30,10 +30,10 @@ export function fmtPct(x: number, digits = 1) {
 }
 
 export const PHASE_STYLE: Record<Phase, string> = {
-  dimasak: "bg-paper-2 text-ink-2",
-  di_dapur: "bg-daun-tint text-daun-2",
-  perjalanan: "bg-detak-tint text-ink",
-  di_sekolah: "bg-paper-2 text-route",
+  dimasak: "bg-paper-2 text-muted",
+  di_dapur: "bg-paper-2 text-ink",
+  perjalanan: "bg-detak-tint text-daun-2",
+  di_sekolah: "bg-route/10 text-route",
   disantap: "bg-paper-2 text-muted",
   ditahan: "bg-ink text-card",
 };

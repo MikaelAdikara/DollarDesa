@@ -60,7 +60,7 @@ export function IpHistogram({ states, height = 220 }: { states: BatchState[]; he
 }
 
 const FLOW: { phase: Phase; label: string; color: string }[] = [
-  { phase: "di_dapur", label: "Matang, di dapur", color: "var(--color-daun)" },
+  { phase: "di_dapur", label: "Matang, di dapur", color: "var(--color-ink-2)" },
   { phase: "perjalanan", label: "Dalam perjalanan", color: "var(--color-detak)" },
   { phase: "di_sekolah", label: "Tiba di sekolah", color: "var(--color-route)" },
   { phase: "disantap", label: "Sudah disantap", color: "var(--color-line-2)" },

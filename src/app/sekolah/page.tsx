@@ -22,7 +22,7 @@ export default async function SekolahIndex({ searchParams }: { searchParams: Pro
   const tOnly = sp.t ? `?t=${encodeURIComponent(sp.t)}` : "";
 
   return (
-    <main className="mx-auto max-w-4xl px-4 pb-28 pt-10 sm:px-6">
+    <main className="mx-auto max-w-4xl px-4 pb-16 pt-10 sm:px-6">
       <h1 className="text-[clamp(2.2rem,5.5vw,4rem)] font-extrabold leading-[0.95] tracking-[-0.04em]">Cek makanan hari ini.</h1>
       <p className="lede mt-4 max-w-lg text-lg">
         <b>Pindai QR di label boks MBG.</b> Tidak ada label? Cari nama sekolahnya.

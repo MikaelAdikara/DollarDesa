@@ -45,7 +45,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ t
     .map((s) => detailOf(s, clock.now));
 
   return (
-    <main className="mx-auto max-w-7xl px-4 pb-28 sm:px-6">
+    <main className="mx-auto max-w-7xl px-4 pb-16 sm:px-6">
       <section className="grid grid-cols-[minmax(0,1fr)] items-center gap-12 pb-14 pt-12 lg:grid-cols-[1.1fr_1fr] lg:pt-20">
         <div>
           <h1 className="max-w-xl text-[clamp(2.6rem,6vw,5rem)] font-extrabold leading-[0.95] tracking-[-0.04em] text-ink">Jam dinding tidak tahu isi ompreng.</h1>
@@ -53,7 +53,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ t
             <b>DETAK menghitung risiko bakteri setiap batch MBG dari suhu dan waktu.</b> Hasilnya satu angka untuk guru, orang tua, dan pengawas, sebelum makanan disantap.
           </p>
           <div className="mt-8 flex flex-wrap gap-2.5">
-            <Link href={`/dinas${q}`} className="whitespace-nowrap rounded-full bg-ink px-5 py-3 text-sm font-semibold text-card transition-opacity duration-150 hover:opacity-90">
+            <Link href={`/dinas${q}`} className="whitespace-nowrap rounded-full bg-flame px-5 py-3 text-sm font-semibold text-ink shadow-[inset_0_-2px_0_var(--color-ember)] transition-transform duration-150 ease-[var(--ease-out)] hover:-translate-y-px active:translate-y-0">
               Buka control panel
             </Link>
             {featured ? (
@@ -184,17 +184,6 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ t
         </div>
       </section>
 
-      <footer className="mt-24 flex flex-wrap items-baseline justify-between gap-3 border-t border-line pt-5 text-xs text-muted">
-        <span>
-          <b className="text-ink">DETAK</b> · Deteksi Risiko, Setiap Detik · modul ke-8 SIPGN
-        </span>
-        <span>
-          Data operasional disimulasikan dari angka resmi ·{" "}
-          <Link className="underline hover:text-ink" href="/implementasi#data">
-            sumber
-          </Link>
-        </span>
-      </footer>
 
       <Tour
         id="home-v2"

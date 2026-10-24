@@ -49,7 +49,7 @@ export default async function CekPage({ params, searchParams }: { params: Promis
   const verdictColor = d.held ? "text-ink" : expired ? "text-buang" : meta.fg;
 
   return (
-    <main className="mx-auto max-w-6xl px-4 pb-28 pt-8 sm:px-6">
+    <main className="mx-auto max-w-6xl px-4 pb-16 pt-8 sm:px-6">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <Link href={`/sekolah${q}`} className="whitespace-nowrap text-sm font-semibold text-ink-2 hover:text-ink">
           ← Sekolah lain

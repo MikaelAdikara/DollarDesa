@@ -25,9 +25,8 @@ export function BacteriaDial({ wallHours, ip, status, size = 300, caption = true
   const wallFrac = Math.max(0, wallHours) / 4;
   const ipFrac = Math.max(0, ip);
   const ticks = Array.from({ length: 48 }, (_, i) => i);
-  const hand = (frac: number, len: number) => pt(frac % 1, len);
-  const [wx, wy] = hand(Math.min(wallFrac, 1.999), 92);
-  const [bx, by] = hand(Math.min(ipFrac, 1.999), 108);
+  const deg = (frac: number) => (Math.min(frac, 1.999) % 1) * 360;
+  const sweep = { transformOrigin: `${c}px ${c}px`, animation: "dial-sweep 1.4s var(--ease-out) both" } as const;
 
   return (
     <figure className="flex flex-col items-center">
@@ -45,7 +44,7 @@ export function BacteriaDial({ wallHours, ip, status, size = 300, caption = true
         <path d={arc(0, 0.8, R)} stroke="var(--color-aman-tint)" strokeWidth={16} fill="none" />
         <path d={arc(0.8, 1, R)} stroke="var(--color-waspada-tint)" strokeWidth={16} fill="none" />
         {/* bacteria progress (first lap, then overflow lap in red) */}
-        {ipFrac > 0 ? <path d={arc(0, Math.min(ipFrac, 1), R)} stroke={meta.hex} strokeWidth={16} fill="none" strokeLinecap="butt" /> : null}
+        {ipFrac > 0 ? <path d={arc(0, Math.min(ipFrac, 1), R)} pathLength={1} strokeDasharray="1 1" stroke={meta.hex} strokeWidth={16} fill="none" strokeLinecap="butt" style={{ animation: "arc-draw 1.4s var(--ease-out) both" }} /> : null}
         {ipFrac > 1 ? <path d={arc(0, Math.min(ipFrac - 1, 1), R - 18)} stroke="var(--color-buang)" strokeWidth={8} fill="none" strokeDasharray="4 3" /> : null}
         {ticks.map((i) => {
           const major = i % 12 === 0;
@@ -62,12 +61,16 @@ export function BacteriaDial({ wallHours, ip, status, size = 300, caption = true
           );
         })}
         {/* wall hand */}
-        <line x1={c} y1={c} x2={wx} y2={wy} stroke="var(--color-ink)" strokeWidth={5} strokeLinecap="round" />
+        <g style={{ ...sweep, transform: `rotate(${deg(wallFrac)}deg)` }}>
+          <line x1={c} y1={c} x2={c} y2={c - 92} stroke="var(--color-ink)" strokeWidth={5} strokeLinecap="round" />
+        </g>
         {/* bacteria hand */}
-        <line x1={c} y1={c} x2={bx} y2={by} stroke={meta.hex} strokeWidth={4} strokeLinecap="round" />
-        <circle cx={bx} cy={by} r={6} fill={meta.hex} stroke="var(--color-card)" strokeWidth={2} />
+        <g style={{ ...sweep, transform: `rotate(${deg(ipFrac)}deg)` }}>
+          <line x1={c} y1={c} x2={c} y2={c - 108} stroke={meta.hex} strokeWidth={4} strokeLinecap="round" />
+          <circle cx={c} cy={c - 108} r={6} fill={meta.hex} stroke="var(--color-card)" strokeWidth={2} />
+        </g>
         <circle cx={c} cy={c} r={30} fill="var(--color-ink)" />
-        <text x={c} y={c + 2} textAnchor="middle" fontSize="19" fontWeight={700} fill="var(--color-card)" fontFamily="var(--font-schibsted)">
+        <text x={c} y={c + 2} textAnchor="middle" fontSize="19" fontWeight={700} fill="var(--color-card)" fontFamily="var(--font-funnel-display)">
           {fmtIp(ip)}
         </text>
         <text x={c} y={c + 16} textAnchor="middle" fontSize="8" letterSpacing="1.5" fill="var(--color-line)" fontFamily="var(--font-geist-mono)">

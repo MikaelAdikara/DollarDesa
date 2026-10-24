@@ -47,7 +47,7 @@ export default async function DapurPage({ params, searchParams }: { params: Prom
   const todo = ordered.filter((s) => nextCheckpoint(s) !== null && s.phase !== "disantap" && s.phase !== "ditahan");
 
   return (
-    <main className="mx-auto max-w-7xl px-4 pb-28 pt-8 sm:px-6">
+    <main className="mx-auto max-w-7xl px-4 pb-16 pt-8 sm:px-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <Link href={`/dapur?${tq}prov=${k.provinceId}&reg=${k.regencyId}`} className="whitespace-nowrap text-sm font-semibold text-ink-2 hover:text-ink">
           ← Dapur {reg.regency.name}

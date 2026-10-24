@@ -117,8 +117,8 @@ export function IpSimulator() {
                 {String(v).replace(".", ",")}
               </text>
             ))}
-            <path d={band(0.05, 0.95)} fill="var(--color-daun)" opacity={0.18} />
-            <path d={band(0.25, 0.75)} fill="var(--color-daun)" opacity={0.35} />
+            <path d={band(0.05, 0.95)} fill="var(--color-ink)" opacity={0.07} />
+            <path d={band(0.25, 0.75)} fill="var(--color-ink)" opacity={0.14} />
             <path d={line(0.95)} fill="none" stroke={color} strokeWidth={3} />
             <line x1={x(4)} x2={x(4)} y1={pad.t} y2={H - pad.b} stroke="var(--color-ink)" strokeDasharray="6 4" />
             <text x={x(4) + 4} y={pad.t + 12} fontSize="10" fill="var(--color-ink)" fontFamily="var(--font-geist-mono)">

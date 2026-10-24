@@ -51,7 +51,7 @@ const PHASES = [
   { name: "Nasional", from: "2027-07-01", to: "2027-12-31", text: "29.991 SPPG, urutan mengikuti antrean inspeksi" },
 ];
 
-const CLUSTER_COLOR: Record<string, string> = { Tinggi: "var(--color-buang)", Sedang: "var(--color-waspada-ink)", Rendah: "var(--color-daun)" };
+const CLUSTER_COLOR: Record<string, string> = { Tinggi: "var(--color-buang)", Sedang: "var(--color-waspada-ink)", Rendah: "var(--color-aman)" };
 
 export default async function BgnPage({ searchParams }: { searchParams: Promise<{ t?: string }> }) {
   const { t } = await searchParams;
@@ -68,8 +68,8 @@ export default async function BgnPage({ searchParams }: { searchParams: Promise<
   const totalPortions = summarize(states).portions;
   const overToday = states.filter((s) => s.ipAtMeal >= 1);
   const funnel = [
-    { label: "Porsi dipantau", value: totalPortions, note: `${fmtInt(states.length)} batch · ${fmtInt(PILOT_TOTAL_SPPG)} SPPG`, color: "var(--color-daun)" },
-    { label: "Data suhu lengkap", value: states.filter((s) => s.missing.length === 0).reduce((a, s) => a + s.batch.school.portions, 0), note: "semua titik jatuh tempo tercatat", color: "var(--color-daun)" },
+    { label: "Porsi dipantau", value: totalPortions, note: `${fmtInt(states.length)} batch · ${fmtInt(PILOT_TOTAL_SPPG)} SPPG`, color: "var(--color-ink-2)" },
+    { label: "Data suhu lengkap", value: states.filter((s) => s.missing.length === 0).reduce((a, s) => a + s.batch.school.portions, 0), note: "semua titik jatuh tempo tercatat", color: "var(--color-ink-2)" },
     { label: "IP ≥ 1,0 saat makan", value: overToday.reduce((a, s) => a + s.batch.school.portions, 0), note: "proyeksi, butuh tindakan", color: "var(--color-detak)" },
     { label: "Ditahan", value: overToday.filter((s) => s.held).reduce((a, s) => a + s.batch.school.portions, 0), note: "guru piket, SPPG, atau Satgas", color: "var(--color-ink)" },
     { label: "Tersaji di atas ambang", value: overToday.filter((s) => !s.held && s.phase === "disantap").reduce((a, s) => a + s.batch.school.portions, 0), note: "sasaran pilot: mendekati nol", color: "var(--color-buang)" },
@@ -87,7 +87,7 @@ export default async function BgnPage({ searchParams }: { searchParams: Promise<
   ];
 
   return (
-    <main className="mx-auto max-w-7xl px-4 pb-28 pt-8 sm:px-6">
+    <main className="mx-auto max-w-7xl px-4 pb-16 pt-8 sm:px-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <span className="text-sm text-muted">{fmtDateLong(clock.serviceDate)}</span>
         <PersonaGate role="bgn" />
@@ -123,7 +123,7 @@ export default async function BgnPage({ searchParams }: { searchParams: Promise<
         <div className="relative h-14">
           <div className="absolute inset-x-0 top-6 h-px bg-line-2" />
           {PHASES.map((ph, i) => (
-            <div key={ph.name} className="absolute top-[18px] h-4 rounded-full" style={{ left: pos(ph.from), width: `calc(${pos(ph.to)} - ${pos(ph.from)})`, background: ["var(--color-line-2)", "var(--color-detak)", "var(--color-daun)"][i] }}>
+            <div key={ph.name} className="absolute top-[18px] h-4 rounded-full" style={{ left: pos(ph.from), width: `calc(${pos(ph.to)} - ${pos(ph.from)})`, background: ["var(--color-line-2)", "var(--color-flame)", "var(--color-ink)"][i] }}>
               <span className="absolute -top-5 left-0 whitespace-nowrap text-xs font-semibold">{ph.name}</span>
             </div>
           ))}

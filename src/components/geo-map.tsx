@@ -58,7 +58,7 @@ export function GeoMap({
         const dot = (
           <g key={p.id}>
             {p.ring ? <circle cx={cx} cy={cy} r={r * 2.1} fill="none" stroke={p.color} strokeWidth={2} opacity={0.55} /> : null}
-            <circle cx={cx} cy={cy} r={r} fill={p.color} stroke="#fff" strokeWidth={1.2}>
+            <circle cx={cx} cy={cy} r={r} fill={p.color} stroke="var(--color-card)" strokeWidth={1.2}>
               {p.label ? <title>{p.label}</title> : null}
             </circle>
           </g>

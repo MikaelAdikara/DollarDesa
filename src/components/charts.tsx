@@ -58,14 +58,14 @@ export function BatchJourneyChart(props: {
       <text x={x(rule4hAt) + 4} y={pad.t + 12} fontSize="10" fill="var(--color-ink)" fontFamily="var(--font-geist-mono)">
         batas 4 jam
       </text>
-      <line x1={x(mealAt)} x2={x(mealAt)} y1={pad.t} y2={H - pad.b} stroke="var(--color-daun)" strokeWidth={2} />
-      <text x={x(mealAt) + 4} y={H - pad.b - 6} fontSize="10" fill="var(--color-daun)" fontWeight={700} fontFamily="var(--font-geist-mono)">
+      <line x1={x(mealAt)} x2={x(mealAt)} y1={pad.t} y2={H - pad.b} stroke="var(--color-ink)" strokeWidth={2} />
+      <text x={x(mealAt) + 4} y={H - pad.b - 6} fontSize="10" fill="var(--color-ink)" fontWeight={700} fontFamily="var(--font-geist-mono)">
         makan
       </text>
       {now > t0 && now < t1 ? (
         <g>
-          <line x1={x(now)} x2={x(now)} y1={pad.t} y2={H - pad.b} stroke="var(--color-detak)" strokeWidth={2} />
-          <text x={x(now) - 4} y={pad.t + 12} textAnchor="end" fontSize="10" fill="var(--color-detak)" fontWeight={700} fontFamily="var(--font-geist-mono)">
+          <line x1={x(now)} x2={x(now)} y1={pad.t} y2={H - pad.b} stroke="var(--color-daun)" strokeWidth={2} />
+          <text x={x(now) - 4} y={pad.t + 26} textAnchor="end" fontSize="10" fill="var(--color-daun)" fontWeight={700} fontFamily="var(--font-geist-mono)">
             sekarang
           </text>
         </g>
@@ -75,8 +75,8 @@ export function BatchJourneyChart(props: {
       <path d={ipLine(future)} fill="none" stroke="var(--color-ink)" strokeWidth={2.5} strokeDasharray="5 4" opacity={0.6} />
       {readings.map((r) => (
         <g key={r.checkpoint}>
-          <circle cx={x(r.at)} cy={yT(r.foodC)} r={7} fill={r.source === "asumsi" ? "#fff" : "var(--color-daun)"} stroke="var(--color-daun)" strokeWidth={2} />
-          <text x={x(r.at)} y={yT(r.foodC) + 3.5} textAnchor="middle" fontSize="9" fontWeight={700} fill={r.source === "asumsi" ? "var(--color-daun)" : "#fff"}>
+          <circle cx={x(r.at)} cy={yT(r.foodC)} r={7} fill={r.source === "asumsi" ? "var(--color-card)" : "var(--color-ink)"} stroke="var(--color-ink)" strokeWidth={2} />
+          <text x={x(r.at)} y={yT(r.foodC) + 3.5} textAnchor="middle" fontSize="9" fontWeight={700} fill={r.source === "asumsi" ? "var(--color-ink)" : "var(--color-card)"}>
             {r.checkpoint}
           </text>
         </g>

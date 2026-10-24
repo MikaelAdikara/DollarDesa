@@ -19,7 +19,7 @@ export default function MetodePage() {
   const rows = CASES.map((c) => ({ ...c, mc: monteCarloIP(c.gap, c.T, c.sc, 4000, 23) }));
   const temps = [20, 22, 24, 26, 28, 30, 32, 34, 36];
   return (
-    <main className="mx-auto max-w-7xl px-4 pb-28 pt-10 sm:px-6">
+    <main className="mx-auto max-w-7xl px-4 pb-16 pt-10 sm:px-6">
       <h1 className="max-w-4xl text-[clamp(2.2rem,5vw,4rem)] font-extrabold leading-[0.95] tracking-[-0.04em]">Suhu dan jam, jadi satu angka.</h1>
       <p className="lede mt-4 max-w-xl text-lg">
         <b>Geser suhu ruang dan jeda waktu.</b> Kode yang menghitung di sini sama dengan yang dipakai server.
@@ -78,7 +78,7 @@ export default function MetodePage() {
                 <div key={T} className="grid grid-cols-[44px_1fr_64px] items-center gap-2 text-sm">
                   <span className="font-mono text-muted">{T}°C</span>
                   <span className="h-2.5 overflow-hidden rounded-full bg-paper-2">
-                    <span className="block h-full rounded-full" style={{ width: `${(m / 130) * 100}%`, background: T >= 32 ? "var(--color-buang)" : T >= 28 ? "var(--color-detak)" : "var(--color-daun)" }} />
+                    <span className="block h-full rounded-full" style={{ width: `${(m / 130) * 100}%`, background: T >= 32 ? "var(--color-buang)" : T >= 28 ? "var(--color-flame)" : "var(--color-ink-2)" }} />
                   </span>
                   <span className="text-right font-mono tnum">{m.toFixed(0)} mnt</span>
                 </div>

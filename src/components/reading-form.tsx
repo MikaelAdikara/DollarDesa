@@ -58,7 +58,7 @@ export function ReadingForm({ batchId, checkpoints, suggestedCp, ambientC, t }: 
         </label>
       </div>
       <p className="text-xs text-muted">Jam dicap server, bukan diketik petugas.</p>
-      <button disabled={pending} className="rounded-full bg-daun py-3 font-semibold text-card transition-colors duration-150 hover:bg-daun-2 disabled:opacity-60">
+      <button disabled={pending} className="rounded-full bg-ink py-3 font-semibold text-card transition-colors duration-150 hover:bg-ink-2 disabled:opacity-60">
         {pending ? "Menghitung ulang…" : "Simpan suhu"}
       </button>
       {msg ? (
